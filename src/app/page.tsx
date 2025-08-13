@@ -1,103 +1,236 @@
-import Image from "next/image";
+import Image from 'next/image';
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+    <div className="flex flex-col h-screen">
+      <header className="bg-gradient-to-r from-[#9333EA] via-[#EC4899] to-[#F97316] w-full justify-between items-center h-[82px] min-h-[82px] max-h-[82px] flex p-4 box-border">
+        <div className="w-[165px] h-[40px] flex justify-between items-center">
+          <div className="bg-[#a159d6] w-[40px] h-[40px] flex justify-center items-center rounded-[12px] shadow-lg">
+            <img
+              src="images/肉球.svg"
+              alt="肉球"
+              className="w-[28px] h-[28px] object-contain"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
+          <div className="w-[120px] h-[30px] text-white text-[22px] font-semibold flex items-center">
+            ペット日記
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <div className="w-[281px] h-[50px] flex justify-between items-center">
+          <div className="w-[50px] h-[19px] text-white text-[16px] leading-[20px] font-sans">
+            ホーム
+          </div>
+          <div className="bg-[#e27c63] w-[172px] h-[50px] rounded-[12px] px-[22px] flex justify-between items-center">
+            <div className="bg-[#de937c] w-[32px] h-[32px] rounded-[50%] flex justify-center items-center">
+              <img
+                src="images/本.svg"
+                alt="本"
+                className="w-[21px] h-[21px] object-contain"
+              />
+            </div>
+            <div className="w-[64px] h-[19px] text-white text-[16px] leading-[20px] font-sans">
+              日記一覧
+            </div>
+            <div className="bg-[#ff9ca9] w-[14px] h-[14px] flex justify-center items-center">
+              <img
+                src="images/星.svg"
+                alt="星"
+                className="w-[14px] h-[14px] object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      </header>
+      <div className="flex-1 flex px-[16px]">
+        <div className="w-full flex flex-col">
+          <div className="w-full h-[48px] mt-[40px] flex justify-between items-center">
+            <div className=" w-[246px] h-[36px] flex justify-between items-center">
+              <div className="w-[30px] h-[30px] flex justify-center items-center">
+                <img
+                  src="images/本2.png"
+                  alt="本2"
+                  className="w-[28px] h-[28px] object-contain"
+                />
+              </div>
+              <div className="bg-gradient-to-r from-[#9333EA] to-[#DB2777] w-[210px] h-[35.5px] flex justify-center items-center text-white text-[27px] font-bold">
+                ペット日記一覧
+              </div>
+            </div>
+            <div className="bg-gradient-to-r from-[#9333EA] to-[#DB2777] w-[146px] h-[48px] flex justify-between items-center px-[20px] py-[14.5px] rounded-[12px]">
+              <div className="w-[18px] h-[18px] text-[17px] text-white font-semibold leading-[18px]">
+                ＋
+              </div>
+              <div className="w-[80px] h-[19px] text-[15px] text-white font-medium leading-[19px]">
+                新しい日記
+              </div>
+            </div>
+          </div>
+          <div className="w-full h-auto mt-[32px] flex">
+            <div className="grid grid-cols-4 gap-[37px]">
+              <div className="w-[324.2px] h-[406px] bg-white/90 backdrop-blur rounded-[16px] shadow-lg">
+                <div className="w-[324.2px] h-[224px] rounded-t-[16px]">
+                  <img
+                    src="images/wim.jpg"
+                    alt="ウィム"
+                    className="w-[324.2px] h-[224px] rounded-t-[16px] object-cover"
+                  />
+                </div>
+                <div className="w-[324.2px] h-[182px] rounded-b-[16px] p-[24px]">
+                  <div className="w-full h-[26px] flex items-center">
+                    <div className="w-[26px] h-[26px] rounded-[50%] flex justify-center items-center">
+                      <img
+                        src="images/日付.png"
+                        alt="日付"
+                        className="w-[15px] h-[15px] object-cover mr-[2px]"
+                      />
+                    </div>
+                    <div className="w-[100px] h-[17px] text-[#6B7280] leading-[18px] text-[13px] flex ml-[8px]">
+                      2023年12月1日
+                    </div>
+                  </div>
+                  <div className="w-full h-[56px] flex text-[#1F2937] items-center mt-[12px] overflow-hidden">
+                    <p className="line-clamp-2">
+                      毛繕いをしていたらなんと足が3本になっていて困っていたウィム。
+                    </p>
+                  </div>
+                  <div className="w-full h-[20px] flex justify-end items-center mt-[20px]">
+                    <div className="w-[70px] h-[16.5px] text-[#9333EA] text-[11.9px] font-medium">
+                      詳細を見る
+                    </div>
+                    <div className="w-[16px] h-[16px] text-[#9333EA] text-[11.9px] font-medium">
+                      <img
+                        src="images/大なり.png"
+                        alt="大なり"
+                        className="w-[16px] h-[16px] object-cover"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="w-[324.2px] h-[406px] bg-white/90 backdrop-blur rounded-[16px] shadow-lg">
+                <div className="w-[324.2px] h-[224px] bg-[pink] rounded-t-[16px]">
+                  <img
+                    src="images/pino.jpg"
+                    alt="ピノ"
+                    className="w-[324.2px] h-[224px] rounded-t-[16px] object-cover"
+                  />
+                </div>
+                <div className="w-[324.2px] h-[182px] rounded-b-[16px] p-[24px]">
+                  <div className="w-full h-[26px] flex items-center">
+                    <div className="w-[26px] h-[26px] rounded-[50%] flex justify-center items-center">
+                      <img
+                        src="images/日付.png"
+                        alt="日付"
+                        className="w-[15px] h-[15px] object-cover mr-[2px]"
+                      />
+                    </div>
+                    <div className="w-[100px] h-[17px] text-[#6B7280] leading-[18px] text-[13px] flex ml-[8px]">
+                      2023年12月2日
+                    </div>
+                  </div>
+                  <div className="w-full h-[56px] flex text-[#1F2937] items-center mt-[12px] overflow-hidden">
+                    <p className="line-clamp-2">
+                      手術がショックだったピノ。友達のクマに紛れて隠れているつもりみたい。
+                    </p>
+                  </div>
+                  <div className="w-full h-[20px] flex justify-end items-center mt-[20px]">
+                    <div className="w-[70px] h-[16.5px] text-[#9333EA] text-[11.9px] font-medium">
+                      詳細を見る
+                    </div>
+                    <div className="w-[16px] h-[16px] text-[#9333EA] text-[11.9px] font-medium">
+                      <img
+                        src="images/大なり.png"
+                        alt="大なり"
+                        className="w-[16px] h-[16px] object-cover"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="w-[324.2px] h-[406px] bg-white/90 backdrop-blur rounded-[16px] shadow-lg">
+                <div className="w-[324.2px] h-[224px] bg-[pink] rounded-t-[16px]">
+                  <img
+                    src="images/yuki.jpg"
+                    alt="ユキ"
+                    className="w-[324.2px] h-[224px] rounded-t-[16px] object-cover"
+                  />
+                </div>
+                <div className="w-[324.2px] h-[182px] rounded-b-[16px] p-[24px]">
+                  <div className="w-full h-[26px] flex items-center">
+                    <div className="w-[26px] h-[26px] rounded-[50%] flex justify-center items-center">
+                      <img
+                        src="images/日付.png"
+                        alt="日付"
+                        className="w-[15px] h-[15px] object-cover mr-[2px]"
+                      />
+                    </div>
+                    <div className="w-[100px] h-[17px] text-[#6B7280] leading-[18px] text-[13px] flex ml-[8px]">
+                      2023年12月3日
+                    </div>
+                  </div>
+                  <div className="w-full h-[56px] flex text-[#1F2937] items-center mt-[12px] overflow-hidden">
+                    <p className="line-clamp-2">
+                      部屋んぽ中に疲れてしまい、堂々と寝ているユキちゃん。
+                    </p>
+                  </div>
+                  <div className="w-full h-[20px] flex justify-end items-center mt-[20px]">
+                    <div className="w-[70px] h-[16.5px] text-[#9333EA] text-[11.9px] font-medium">
+                      詳細を見る
+                    </div>
+                    <div className="w-[16px] h-[16px] text-[#9333EA] text-[11.9px] font-medium">
+                      <img
+                        src="images/大なり.png"
+                        alt="大なり"
+                        className="w-[16px] h-[16px] object-cover"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="w-[324.2px] h-[406px] bg-white/90 backdrop-blur rounded-[16px] shadow-lg">
+                <div className="w-[324.2px] h-[224px] bg-[pink] rounded-t-[16px]">
+                  <img
+                    src="images/ogum.jpg"
+                    alt="オグマ"
+                    className="w-[324.2px] h-[224px] rounded-t-[16px] object-cover"
+                  />
+                </div>
+                <div className="w-[324.2px] h-[182px] rounded-b-[16px] p-[24px]">
+                  <div className="w-full h-[26px] flex items-center">
+                    <div className="w-[26px] h-[26px] rounded-[50%] flex justify-center items-center">
+                      <img
+                        src="images/日付.png"
+                        alt="日付"
+                        className="w-[15px] h-[15px] object-cover mr-[2px]"
+                      />
+                    </div>
+                    <div className="w-[100px] h-[17px] text-[#6B7280] leading-[18px] text-[13px] flex ml-[8px]">
+                      2023年12月4日
+                    </div>
+                  </div>
+                  <div className="w-full h-[56px] flex text-[#1F2937] items-center mt-[12px] overflow-hidden">
+                    <p className="line-clamp-2">
+                      仕事の合間に仮眠をとっているオグマ。
+                    </p>
+                  </div>
+                  <div className="w-full h-[20px] flex justify-end items-center mt-[20px]">
+                    <div className="w-[70px] h-[16.5px] text-[#9333EA] text-[11.9px] font-medium">
+                      詳細を見る
+                    </div>
+                    <div className="w-[16px] h-[16px] text-[#9333EA] text-[11.9px] font-medium">
+                      <img
+                        src="images/大なり.png"
+                        alt="大なり"
+                        className="w-[16px] h-[16px] object-cover"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
