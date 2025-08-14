@@ -1,6 +1,53 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 
+// 日記データの型定義
+interface PetDiary {
+  id: string;
+  authour: string;
+  imageUrl: string;
+  createdAt: string;
+  content: string;
+}
+
 export default function Home() {
+  const [diaries, setDiaries] = useState<PetDiary[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchDiaries();
+  }, []);
+
+  const fetchDiaries = async () => {
+    try {
+      const response = await fetch('http://localhost:3002/pet-diaries');
+      if (!response.ok) {
+        throw new Error('Failed to fetch diaries');
+      }
+      const data: PetDiary[] = await response.json();
+      setDiaries(data);
+      setLoading(false);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unknown error occurred');
+      }
+      setLoading(false);
+    }
+  };
+
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${year}年${month}月${day}日`;
+  };
+
   return (
     <div className="flex flex-col h-screen">
       <header className="bg-gradient-to-r from-[#9333EA] via-[#EC4899] to-[#F97316] w-full justify-between items-center h-[82px] min-h-[82px] max-h-[82px] flex p-4 box-border">
@@ -56,7 +103,7 @@ export default function Home() {
                 ペット日記一覧
               </div>
             </div>
-            <div className="bg-gradient-to-r from-[#9333EA] to-[#DB2777] w-[146px] h-[48px] flex justify-between items-center px-[20px] py-[14.5px] rounded-[12px]">
+            <div className="bg-gradient-to-r from-[#9333EA] to-[#DB2777] w-[146px] h-[48px] flex justify-between items-center px-[20px] py-[14.5px] rounded-[12px] cursor-pointer hover:opacity-90 transition-opacity">
               <div className="w-[18px] h-[18px] text-[17px] text-white font-semibold leading-[18px]">
                 ＋
               </div>
@@ -66,168 +113,65 @@ export default function Home() {
             </div>
           </div>
           <div className="w-full h-auto mt-[32px] flex">
-            <div className="grid grid-cols-4 gap-[37px]">
-              <div className="w-[324.2px] h-[406px] bg-white/90 backdrop-blur rounded-[16px] shadow-lg">
-                <div className="w-[324.2px] h-[224px] rounded-t-[16px]">
-                  <img
-                    src="images/wim.jpg"
-                    alt="ウィム"
-                    className="w-[324.2px] h-[224px] rounded-t-[16px] object-cover"
-                  />
-                </div>
-                <div className="w-[324.2px] h-[182px] rounded-b-[16px] p-[24px]">
-                  <div className="w-full h-[26px] flex items-center">
-                    <div className="w-[26px] h-[26px] rounded-[50%] flex justify-center items-center">
-                      <img
-                        src="images/日付.png"
-                        alt="日付"
-                        className="w-[15px] h-[15px] object-cover mr-[2px]"
-                      />
-                    </div>
-                    <div className="w-[100px] h-[17px] text-[#6B7280] leading-[18px] text-[13px] flex ml-[8px]">
-                      2023年12月1日
-                    </div>
-                  </div>
-                  <div className="w-full h-[56px] flex text-[#1F2937] items-center mt-[12px] overflow-hidden">
-                    <p className="line-clamp-2">
-                      毛繕いをしていたらなんと足が3本になっていて困っていたウィム。
-                    </p>
-                  </div>
-                  <div className="w-full h-[20px] flex justify-end items-center mt-[20px]">
-                    <div className="w-[70px] h-[16.5px] text-[#9333EA] text-[11.9px] font-medium">
-                      詳細を見る
-                    </div>
-                    <div className="w-[16px] h-[16px] text-[#9333EA] text-[11.9px] font-medium">
-                      <img
-                        src="images/大なり.png"
-                        alt="大なり"
-                        className="w-[16px] h-[16px] object-cover"
-                      />
-                    </div>
-                  </div>
-                </div>
+            {loading ? (
+              <div className="w-full flex justify-center items-center h-[200px]">
+                <div className="text-[#9333EA] text-xl">読み込み中...</div>
               </div>
-              <div className="w-[324.2px] h-[406px] bg-white/90 backdrop-blur rounded-[16px] shadow-lg">
-                <div className="w-[324.2px] h-[224px] bg-[pink] rounded-t-[16px]">
-                  <img
-                    src="images/pino.jpg"
-                    alt="ピノ"
-                    className="w-[324.2px] h-[224px] rounded-t-[16px] object-cover"
-                  />
-                </div>
-                <div className="w-[324.2px] h-[182px] rounded-b-[16px] p-[24px]">
-                  <div className="w-full h-[26px] flex items-center">
-                    <div className="w-[26px] h-[26px] rounded-[50%] flex justify-center items-center">
-                      <img
-                        src="images/日付.png"
-                        alt="日付"
-                        className="w-[15px] h-[15px] object-cover mr-[2px]"
-                      />
-                    </div>
-                    <div className="w-[100px] h-[17px] text-[#6B7280] leading-[18px] text-[13px] flex ml-[8px]">
-                      2023年12月2日
-                    </div>
-                  </div>
-                  <div className="w-full h-[56px] flex text-[#1F2937] items-center mt-[12px] overflow-hidden">
-                    <p className="line-clamp-2">
-                      手術がショックだったピノ。友達のクマに紛れて隠れているつもりみたい。
-                    </p>
-                  </div>
-                  <div className="w-full h-[20px] flex justify-end items-center mt-[20px]">
-                    <div className="w-[70px] h-[16.5px] text-[#9333EA] text-[11.9px] font-medium">
-                      詳細を見る
-                    </div>
-                    <div className="w-[16px] h-[16px] text-[#9333EA] text-[11.9px] font-medium">
-                      <img
-                        src="images/大なり.png"
-                        alt="大なり"
-                        className="w-[16px] h-[16px] object-cover"
-                      />
-                    </div>
-                  </div>
-                </div>
+            ) : error ? (
+              <div className="w-full flex justify-center items-center h-[200px]">
+                <div className="text-red-500 text-xl">エラー: {error}</div>
               </div>
-              <div className="w-[324.2px] h-[406px] bg-white/90 backdrop-blur rounded-[16px] shadow-lg">
-                <div className="w-[324.2px] h-[224px] bg-[pink] rounded-t-[16px]">
-                  <img
-                    src="images/yuki.jpg"
-                    alt="ユキ"
-                    className="w-[324.2px] h-[224px] rounded-t-[16px] object-cover"
-                  />
-                </div>
-                <div className="w-[324.2px] h-[182px] rounded-b-[16px] p-[24px]">
-                  <div className="w-full h-[26px] flex items-center">
-                    <div className="w-[26px] h-[26px] rounded-[50%] flex justify-center items-center">
-                      <img
-                        src="images/日付.png"
-                        alt="日付"
-                        className="w-[15px] h-[15px] object-cover mr-[2px]"
-                      />
-                    </div>
-                    <div className="w-[100px] h-[17px] text-[#6B7280] leading-[18px] text-[13px] flex ml-[8px]">
-                      2023年12月3日
-                    </div>
-                  </div>
-                  <div className="w-full h-[56px] flex text-[#1F2937] items-center mt-[12px] overflow-hidden">
-                    <p className="line-clamp-2">
-                      部屋んぽ中に疲れてしまい、堂々と寝ているユキちゃん。
-                    </p>
-                  </div>
-                  <div className="w-full h-[20px] flex justify-end items-center mt-[20px]">
-                    <div className="w-[70px] h-[16.5px] text-[#9333EA] text-[11.9px] font-medium">
-                      詳細を見る
-                    </div>
-                    <div className="w-[16px] h-[16px] text-[#9333EA] text-[11.9px] font-medium">
-                      <img
-                        src="images/大なり.png"
-                        alt="大なり"
-                        className="w-[16px] h-[16px] object-cover"
-                      />
-                    </div>
-                  </div>
-                </div>
+            ) : diaries.length === 0 ? (
+              <div className="w-full flex justify-center items-center h-[200px]">
+                <div className="text-gray-500 text-xl">日記がありません</div>
               </div>
-              <div className="w-[324.2px] h-[406px] bg-white/90 backdrop-blur rounded-[16px] shadow-lg">
-                <div className="w-[324.2px] h-[224px] bg-[pink] rounded-t-[16px]">
-                  <img
-                    src="images/ogum.jpg"
-                    alt="オグマ"
-                    className="w-[324.2px] h-[224px] rounded-t-[16px] object-cover"
-                  />
-                </div>
-                <div className="w-[324.2px] h-[182px] rounded-b-[16px] p-[24px]">
-                  <div className="w-full h-[26px] flex items-center">
-                    <div className="w-[26px] h-[26px] rounded-[50%] flex justify-center items-center">
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[37px]">
+                {diaries.map((diary: PetDiary) => (
+                  <div
+                    key={diary.id}
+                    className="w-[324.2px] h-[406px] bg-white/90 backdrop-blur rounded-[16px] shadow-lg"
+                  >
+                    <div className="w-[324.2px] h-[224px] rounded-t-[16px]">
                       <img
-                        src="images/日付.png"
-                        alt="日付"
-                        className="w-[15px] h-[15px] object-cover mr-[2px]"
+                        src={diary.imageUrl}
+                        alt={diary.authour}
+                        className="w-[324.2px] h-[224px] rounded-t-[16px] object-cover"
                       />
                     </div>
-                    <div className="w-[100px] h-[17px] text-[#6B7280] leading-[18px] text-[13px] flex ml-[8px]">
-                      2023年12月4日
+                    <div className="w-[324.2px] h-[182px] rounded-b-[16px] p-[24px]">
+                      <div className="w-full h-[26px] flex items-center">
+                        <div className="w-[26px] h-[26px] rounded-[50%] flex justify-center items-center">
+                          <img
+                            src="images/日付.png"
+                            alt="日付"
+                            className="w-[15px] h-[15px] object-cover mr-[2px]"
+                          />
+                        </div>
+                        <div className="w-[100px] h-[17px] text-[#6B7280] leading-[18px] text-[13px] flex ml-[8px]">
+                          {formatDate(diary.createdAt)}
+                        </div>
+                      </div>
+                      <div className="w-full h-[56px] flex text-[#1F2937] items-center mt-[12px] overflow-hidden">
+                        <p className="line-clamp-2">{diary.content}</p>
+                      </div>
+                      <div className="w-full h-[20px] flex justify-end items-center mt-[20px]">
+                        <div className="w-[70px] h-[16.5px] text-[#9333EA] text-[11.9px] font-medium cursor-pointer hover:underline">
+                          詳細を見る
+                        </div>
+                        <div className="w-[16px] h-[16px] text-[#9333EA] text-[11.9px] font-medium">
+                          <img
+                            src="images/大なり.png"
+                            alt="大なり"
+                            className="w-[16px] h-[16px] object-cover"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className="w-full h-[56px] flex text-[#1F2937] items-center mt-[12px] overflow-hidden">
-                    <p className="line-clamp-2">
-                      仕事の合間に仮眠をとっているオグマ。
-                    </p>
-                  </div>
-                  <div className="w-full h-[20px] flex justify-end items-center mt-[20px]">
-                    <div className="w-[70px] h-[16.5px] text-[#9333EA] text-[11.9px] font-medium">
-                      詳細を見る
-                    </div>
-                    <div className="w-[16px] h-[16px] text-[#9333EA] text-[11.9px] font-medium">
-                      <img
-                        src="images/大なり.png"
-                        alt="大なり"
-                        className="w-[16px] h-[16px] object-cover"
-                      />
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

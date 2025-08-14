@@ -1,5 +1,5 @@
 // src/app/items/route.ts
-
+import { readPetDiaries, writePetDiaries } from '@/lib/fs';
 import { randomUUID } from 'crypto';
 
 export async function GET() {

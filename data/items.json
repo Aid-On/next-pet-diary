@@ -1,15 +1,8 @@
 [
   {
-    "authour": "string",
-    "id": "b456",
-    "imageUrl": "string",
-    "createdAt": "Date",
-    "content": "string"
-  },
-  {
     "authour": "kotone",
     "id": "7ec6ccc0-e3e5-4ded-a073-2b197393645a",
-    "imageUrl": "https://aid-on.org/images/1",
+    "imageUrl": "images/pino.jpg",
     "createdAt": "2025-08-07T00:00:00.000Z",
     "content": "今日もウサギは可愛かった"
   }
