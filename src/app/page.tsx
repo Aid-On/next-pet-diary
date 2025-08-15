@@ -23,7 +23,8 @@ export default function Home() {
 
   const fetchDiaries = async () => {
     try {
-      const response = await fetch('http://localhost:3002/pet-diaries');
+      // Next.jsのAPIルートを使用（ポート番号不要）
+      const response = await fetch('/pet-diaries');
       if (!response.ok) {
         throw new Error('Failed to fetch diaries');
       }
@@ -50,11 +51,11 @@ export default function Home() {
 
   return (
     <div className="flex flex-col h-screen">
-      <header className="bg-gradient-to-r from-[#9333EA] via-[#EC4899] to-[#F97316] w-full justify-between items-center h-[82px] min-h-[82px] max-h-[82px] flex p-4 box-border">
+      <header className="bg-gradient-to-r from-[#9333EA] via-[#EC4899] to-[#F97316] w-full justify-between items-center h-[82px] min-h-[82px] max-h-[82px] shadow-xl flex p-4 box-border">
         <div className="w-[165px] h-[40px] flex justify-between items-center">
           <div className="bg-[#a159d6] w-[40px] h-[40px] flex justify-center items-center rounded-[12px] shadow-lg">
             <img
-              src="images/肉球.svg"
+              src="/images/肉球.svg"
               alt="肉球"
               className="w-[28px] h-[28px] object-contain"
             />
@@ -70,7 +71,7 @@ export default function Home() {
           <div className="bg-[#e27c63] w-[172px] h-[50px] rounded-[12px] px-[22px] flex justify-between items-center">
             <div className="bg-[#de937c] w-[32px] h-[32px] rounded-[50%] flex justify-center items-center">
               <img
-                src="images/本.svg"
+                src="/images/本.svg"
                 alt="本"
                 className="w-[21px] h-[21px] object-contain"
               />
@@ -80,7 +81,7 @@ export default function Home() {
             </div>
             <div className="bg-[#ff9ca9] w-[14px] h-[14px] flex justify-center items-center">
               <img
-                src="images/星.svg"
+                src="/images/星.svg"
                 alt="星"
                 className="w-[14px] h-[14px] object-contain"
               />
@@ -94,7 +95,7 @@ export default function Home() {
             <div className=" w-[246px] h-[36px] flex justify-between items-center">
               <div className="w-[30px] h-[30px] flex justify-center items-center">
                 <img
-                  src="images/本2.png"
+                  src="/images/本2.png"
                   alt="本2"
                   className="w-[28px] h-[28px] object-contain"
                 />
@@ -143,7 +144,7 @@ export default function Home() {
                       <div className="w-full h-[26px] flex items-center">
                         <div className="w-[26px] h-[26px] rounded-[50%] flex justify-center items-center">
                           <img
-                            src="images/日付.png"
+                            src="/images/日付.png"
                             alt="日付"
                             className="w-[15px] h-[15px] object-cover mr-[2px]"
                           />
@@ -161,7 +162,7 @@ export default function Home() {
                         </div>
                         <div className="w-[16px] h-[16px] text-[#9333EA] text-[11.9px] font-medium">
                           <img
-                            src="images/大なり.png"
+                            src="/images/大なり.png"
                             alt="大なり"
                             className="w-[16px] h-[16px] object-cover"
                           />
