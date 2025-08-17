@@ -1,15 +1,7 @@
 // src/app/pet-diaries/route.ts
 import { readPetDiaries, writePetDiaries } from '@/lib/fs';
 import { randomUUID } from 'crypto';
-
-// PetDiary型の定義
-interface PetDiary {
-  id: string;
-  authour: string;
-  imageUrl: string;
-  createdAt: string; // ISO文字列として保存
-  content: string;
-}
+import type { PetDiary } from '@/types/pet-diary';
 
 export async function GET() {
   try {
@@ -55,8 +47,9 @@ export async function POST(req: Request) {
     const newPetDiary: PetDiary = {
       id: randomUUID(),
       authour: body.authour,
+      petName: body.petName,
       imageUrl: body.imageUrl,
-      createdAt: new Date().toISOString(), // ISO文字列として保存
+      createdAt: new Date(), // Date型として保存
       content: body.content || 'AIが自動生成する内容', // contentフィールドも受け取れるように
     };
 

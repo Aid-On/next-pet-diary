@@ -1,13 +1,96 @@
+'use client';
+import { PetDiary } from '@/types/pet-diary';
 import Image from 'next/image';
+import { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
 
-export default function Home() {
+export default function PetDetailPage() {
+  const params = useParams();
+  const id = params.id as string;
+
+  const [diaryEntry, setDiaryEntry] = useState<PetDiary | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const formatDate = (date: Date | string): string => {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth() + 1;
+    const day = dateObj.getDate();
+    return `${year}年${month}月${day}日`;
+  };
+
+  useEffect(() => {
+    if (!id) {
+      setError('IDが指定されていません');
+      setLoading(false);
+      return;
+    }
+
+    // 指定されたIDの日記データを取得
+    const fetchDiaryEntry = async () => {
+      try {
+        const response = await fetch(`/pet-diaries/${id}`);
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error('指定された日記が見つかりません');
+          }
+          throw new Error('日記の取得に失敗しました');
+        }
+        const data = await response.json();
+        // createdAtをDate型に変換
+        const diaryWithDate: PetDiary = {
+          ...data,
+          createdAt: new Date(data.createdAt),
+        };
+        setDiaryEntry(diaryWithDate);
+        setLoading(false);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('エラーが発生しました');
+        }
+        setLoading(false);
+      }
+    };
+
+    fetchDiaryEntry();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-lg text-gray-600">読み込み中...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-lg text-red-600">エラー: {error}</div>
+      </div>
+    );
+  }
+
+  if (!diaryEntry) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-lg text-gray-600">
+          日記エントリが見つかりません
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col h-screen">
       <header className="bg-gradient-to-r from-[#9333EA] via-[#EC4899] to-[#F97316] w-full justify-between items-center h-[82px] min-h-[82px] max-h-[82px] shadow-xl flex p-4 box-border">
         <div className="w-[165px] h-[40px] flex justify-between items-center">
           <div className="bg-[#a159d6] w-[40px] h-[40px] flex justify-center items-center rounded-[12px] shadow-lg">
             <img
-              src="images/肉球.svg"
+              src="/images/肉球.svg"
               alt="肉球"
               className="w-[28px] h-[28px] object-contain"
             />
@@ -23,17 +106,17 @@ export default function Home() {
           <div className="bg-[#e27c63] w-[172px] h-[50px] rounded-[12px] px-[22px] flex justify-between items-center">
             <div className="bg-[#de937c] w-[32px] h-[32px] rounded-[50%] flex justify-center items-center">
               <img
-                src="images/本.svg"
+                src="/images/本.svg"
                 alt="本"
                 className="w-[21px] h-[21px] object-contain"
               />
             </div>
             <div className="w-[64px] h-[19px] text-white text-[16px] leading-[20px] font-sans">
-              日記一覧
+              日記詳細
             </div>
             <div className="bg-[#ff9ca9] w-[14px] h-[14px] flex justify-center items-center">
               <img
-                src="images/星.svg"
+                src="/images/星.svg"
                 alt="星"
                 className="w-[14px] h-[14px] object-contain"
               />
@@ -42,7 +125,10 @@ export default function Home() {
         </div>
       </header>
       <div className="flex-1 flex flex-col px-[240px] py-[40px]">
-        <div className="w-full h-[24px] flex items-center">
+        <div
+          className="w-full h-[24px] flex items-center cursor-pointer"
+          onClick={() => window.history.back()}
+        >
           <div className="w-[18px] h-[18px]">
             <img
               src="/images/左矢印.png"
@@ -57,8 +143,8 @@ export default function Home() {
         <div className="w-full h-auto flex flex-col mt-[32px]">
           <div className="w-full h-[500px] flex">
             <img
-              src="images/yuki.jpg"
-              alt="ユキ"
+              src={diaryEntry.imageUrl}
+              alt={diaryEntry.authour || 'ペット'}
               className="w-full h-[500px] rounded-t-[16px] object-cover"
             />
           </div>
@@ -74,17 +160,17 @@ export default function Home() {
                     />
                   </div>
                   <div className="w-[100px] h-[17px] text-[#6B7280] leading-[18px] text-[14px] font-sans flex ml-[6px]">
-                    2023年12月1日
+                    {formatDate(diaryEntry.createdAt)}
                   </div>
                 </div>
               </div>
               <div className=" w-[190px] h-[46px] flex justify-between items-center">
-                <div className="bg-white w-[82px] h-[46px] border-[#9333EA] border-[1px] rounded-[12px] flex justify-center items-center">
+                <div className="bg-white w-[82px] h-[46px] border-[#9333EA] border-[1px] rounded-[12px] flex justify-center items-center cursor-pointer hover:bg-[#F3E8FF] transition-colors">
                   <div className="w-auto h-[19px] text-[#9333EA] text-[14px] font-sans">
                     編集
                   </div>
                 </div>
-                <div className=" w-[96px] h-[46px] py-[13.5px] px-[20px] flex justify-between">
+                <div className=" w-[96px] h-[46px] py-[13.5px] px-[20px] flex justify-between cursor-pointer hover:opacity-80 transition-opacity">
                   <div className="bg-[#e5bdff] w-[16px] h-[16px]">
                     <img
                       src="/images/ゴミ箱.png"
@@ -99,8 +185,15 @@ export default function Home() {
               </div>
             </div>
             <div className="w-full h-auto flex text-[15.3px] text-[#1F2937] leading-[34px] mt-[24px]">
-              初めての部屋んぽ中に疲れてしまい、堂々と居眠りをしているユキちゃん。まだ危ないことの区別がつかないので、隙間にハマったり自ら穴に落ちたりなど、日々飼い主に助けられながらも危険な挑戦を繰り返している。
+              {diaryEntry.content}
             </div>
+            {diaryEntry.authour && (
+              <div className="w-full h-auto flex items-center mt-[16px]">
+                <div className="text-[14px] text-[#6B7280] font-sans">
+                  ペット名: {diaryEntry.petName}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 [
   {
     "authour": "kotone",
+    "petName": "ピノ",
     "id": "7ec6ccc0-e3e5-4ded-a073-2b197393645a",
     "imageUrl": "images/pino.jpg",
     "createdAt": "2025-08-07T00:00:00.000Z",
@@ -8,6 +9,7 @@
   },
   {
     "authour": "kotone",
+    "petName": "ユキ",
     "id": "7ec6ccc0-e3e5-4ded-a073-2b197393645b",
     "imageUrl": "images/yuki.jpg",
     "createdAt": "2025-08-07T00:00:00.000Z",
@@ -15,6 +17,7 @@
   },
   {
     "authour": "kotone",
+    "petName": "ウィム",
     "id": "7ec6ccc0-e3e5-4ded-a073-2b197393645c",
     "imageUrl": "images/wim.jpg",
     "createdAt": "2025-08-07T00:00:00.000Z",

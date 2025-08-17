@@ -1,6 +1,5 @@
-// src/app/items/[id]/route.ts
-
 import { readPetDiaries, writePetDiaries } from '@/lib/fs';
+import type { PetDiary } from '@/types/pet-diary';
 
 type Params = { id: string };
 
@@ -35,12 +34,13 @@ export async function PUT(req: Request, { params }: { params: Params }) {
 
   const updated: PetDiary = {
     authour: current.authour,
+    petName: current.petName,
     id: current.id,
     imageUrl: body.imageUrl ?? current.imageUrl,
     createdAt:
       body.createdAt === undefined
         ? current.createdAt
-        : new Date(body.createdAt),
+        : new Date(body.createdAt), // Date型として保存
     content: body.content ?? current.content,
   };
   petDiaries[idx] = updated;

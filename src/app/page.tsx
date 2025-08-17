@@ -2,15 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-
-// 日記データの型定義
-interface PetDiary {
-  id: string;
-  authour: string;
-  imageUrl: string;
-  createdAt: string;
-  content: string;
-}
+import Link from 'next/link';
+import { PetDiary } from '@/types/pet-diary';
 
 export default function Home() {
   const [diaries, setDiaries] = useState<PetDiary[]>([]);
@@ -28,8 +21,13 @@ export default function Home() {
       if (!response.ok) {
         throw new Error('Failed to fetch diaries');
       }
-      const data: PetDiary[] = await response.json();
-      setDiaries(data);
+      const data = await response.json();
+      // createdAtをDate型に変換
+      const diariesWithDate: PetDiary[] = data.map((diary: any) => ({
+        ...diary,
+        createdAt: new Date(diary.createdAt),
+      }));
+      setDiaries(diariesWithDate);
       setLoading(false);
     } catch (err) {
       if (err instanceof Error) {
@@ -41,11 +39,11 @@ export default function Home() {
     }
   };
 
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
+  const formatDate = (date: Date | string): string => {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth() + 1;
+    const day = dateObj.getDate();
     return `${year}年${month}月${day}日`;
   };
 
@@ -129,47 +127,46 @@ export default function Home() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[37px]">
                 {diaries.map((diary: PetDiary) => (
-                  <div
-                    key={diary.id}
-                    className="w-[324.2px] h-[406px] bg-white/90 backdrop-blur rounded-[16px] shadow-lg"
-                  >
-                    <div className="w-[324.2px] h-[224px] rounded-t-[16px]">
-                      <img
-                        src={diary.imageUrl}
-                        alt={diary.authour}
-                        className="w-[324.2px] h-[224px] rounded-t-[16px] object-cover"
-                      />
+                  <Link key={diary.id} href={`/${diary.id}`} className="block">
+                    <div className="w-[324.2px] h-[406px] bg-white/90 backdrop-blur rounded-[16px] shadow-lg cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-300">
+                      <div className="w-[324.2px] h-[224px] rounded-t-[16px]">
+                        <img
+                          src={diary.imageUrl}
+                          alt={diary.authour}
+                          className="w-[324.2px] h-[224px] rounded-t-[16px] object-cover"
+                        />
+                      </div>
+                      <div className="w-[324.2px] h-[182px] rounded-b-[16px] p-[24px]">
+                        <div className="w-full h-[26px] flex items-center">
+                          <div className="w-[26px] h-[26px] rounded-[50%] flex justify-center items-center">
+                            <img
+                              src="/images/日付.png"
+                              alt="日付"
+                              className="w-[15px] h-[15px] object-cover mr-[2px]"
+                            />
+                          </div>
+                          <div className="w-[100px] h-[17px] text-[#6B7280] leading-[18px] text-[13px] flex ml-[8px]">
+                            {formatDate(diary.createdAt)}
+                          </div>
+                        </div>
+                        <div className="w-full h-[56px] flex text-[#1F2937] items-center mt-[12px] overflow-hidden">
+                          <p className="line-clamp-2">{diary.content}</p>
+                        </div>
+                        <div className="w-full h-[20px] flex justify-end items-center mt-[20px]">
+                          <div className="w-[70px] h-[16.5px] text-[#9333EA] text-[11.9px] font-medium hover:underline">
+                            詳細を見る
+                          </div>
+                          <div className="w-[16px] h-[16px] text-[#9333EA] text-[11.9px] font-medium">
+                            <img
+                              src="/images/大なり.png"
+                              alt="大なり"
+                              className="w-[16px] h-[16px] object-cover"
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="w-[324.2px] h-[182px] rounded-b-[16px] p-[24px]">
-                      <div className="w-full h-[26px] flex items-center">
-                        <div className="w-[26px] h-[26px] rounded-[50%] flex justify-center items-center">
-                          <img
-                            src="/images/日付.png"
-                            alt="日付"
-                            className="w-[15px] h-[15px] object-cover mr-[2px]"
-                          />
-                        </div>
-                        <div className="w-[100px] h-[17px] text-[#6B7280] leading-[18px] text-[13px] flex ml-[8px]">
-                          {formatDate(diary.createdAt)}
-                        </div>
-                      </div>
-                      <div className="w-full h-[56px] flex text-[#1F2937] items-center mt-[12px] overflow-hidden">
-                        <p className="line-clamp-2">{diary.content}</p>
-                      </div>
-                      <div className="w-full h-[20px] flex justify-end items-center mt-[20px]">
-                        <div className="w-[70px] h-[16.5px] text-[#9333EA] text-[11.9px] font-medium cursor-pointer hover:underline">
-                          詳細を見る
-                        </div>
-                        <div className="w-[16px] h-[16px] text-[#9333EA] text-[11.9px] font-medium">
-                          <img
-                            src="/images/大なり.png"
-                            alt="大なり"
-                            className="w-[16px] h-[16px] object-cover"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}
