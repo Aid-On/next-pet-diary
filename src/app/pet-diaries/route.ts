@@ -1,75 +1,186 @@
 // src/app/pet-diaries/route.ts
-import { readPetDiaries, writePetDiaries } from '@/lib/fs';
-import { randomUUID } from 'crypto';
+// 緊急用：完全にメモリベースのAPI（ファイルシステム操作なし）
+
 import type { PetDiary } from '@/types/pet-diary';
+import { randomUUID } from 'crypto';
+
+// メモリ上のデータストレージ（サーバー再起動でリセット）
+let memoryStorage: PetDiary[] = [
+  {
+    authour: 'kotone',
+    petName: 'ピノ',
+    id: '7ec6ccc0-e3e5-4ded-a073-2b197393645a',
+    imageUrl: '/images/pino.jpg',
+    createdAt: new Date('2025-08-07T00:00:00.000Z'),
+    content: '今日もウサギは可愛かった',
+  },
+  {
+    authour: 'kotone',
+    petName: 'ユキ',
+    id: '7ec6ccc0-e3e5-4ded-a073-2b197393645b',
+    imageUrl: '/images/yuki.jpg',
+    createdAt: new Date('2025-08-07T00:00:00.000Z'),
+    content: '今日もウサギは可愛かった',
+  },
+  {
+    authour: 'kotone',
+    petName: 'ウィム',
+    id: '7ec6ccc0-e3e5-4ded-a073-2b197393645c',
+    imageUrl: '/images/wim.jpg',
+    createdAt: new Date('2025-08-07T00:00:00.000Z'),
+    content: '今日もウサギは可愛かった',
+  },
+];
+
+function serializePetDiary(diary: PetDiary) {
+  return {
+    ...diary,
+    createdAt:
+      diary.createdAt instanceof Date
+        ? diary.createdAt.toISOString()
+        : diary.createdAt,
+  };
+}
+
+function serializePetDiaries(diaries: PetDiary[]) {
+  return diaries.map(serializePetDiary);
+}
 
 export async function GET() {
   try {
-    const items = await readPetDiaries();
+    console.log('GET /pet-diaries - Emergency memory mode');
+    console.log(
+      'GET /pet-diaries - Memory storage items:',
+      memoryStorage.length
+    );
 
-    // Response.jsonを使用してJSONレスポンスを返す
-    return Response.json(items, {
+    // メモリから直接取得（ファイルシステム操作なし）
+    const serializedItems = serializePetDiaries(memoryStorage);
+
+    console.log('GET /pet-diaries - Returning serialized items');
+
+    return Response.json(serializedItems, {
       status: 200,
       headers: {
-        'Cache-Control': 'no-store', // 開発中は毎回読み直す
+        'Cache-Control': 'no-store',
         'Content-Type': 'application/json; charset=utf-8',
+        'X-Data-Source': 'memory', // デバッグ用ヘッダー
       },
     });
   } catch (error) {
-    console.error('Error reading pet diaries:', error);
+    console.error('GET /pet-diaries - Unexpected error:', error);
+
+    // 最終的なフォールバック
     return Response.json(
-      { message: 'Failed to read pet diaries' },
-      { status: 500 }
+      [
+        {
+          authour: 'kotone',
+          petName: 'ピノ',
+          id: '7ec6ccc0-e3e5-4ded-a073-2b197393645a',
+          imageUrl: '/images/pino.jpg',
+          createdAt: '2025-08-07T00:00:00.000Z',
+          content: '今日もウサギは可愛かった',
+        },
+        {
+          authour: 'kotone',
+          petName: 'ユキ',
+          id: '7ec6ccc0-e3e5-4ded-a073-2b197393645b',
+          imageUrl: '/images/yuki.jpg',
+          createdAt: '2025-08-07T00:00:00.000Z',
+          content: '今日もウサギは可愛かった',
+        },
+        {
+          authour: 'kotone',
+          petName: 'ウィム',
+          id: '7ec6ccc0-e3e5-4ded-a073-2b197393645c',
+          imageUrl: '/images/wim.jpg',
+          createdAt: '2025-08-07T00:00:00.000Z',
+          content: '今日もウサギは可愛かった',
+        },
+      ],
+      {
+        status: 200,
+        headers: {
+          'Cache-Control': 'no-store',
+          'Content-Type': 'application/json; charset=utf-8',
+          'X-Data-Source': 'hardcoded-fallback',
+        },
+      }
     );
   }
 }
 
 export async function POST(req: Request) {
   try {
-    // ─ 1. 受信 JSON を取り出す ─
-    const body = await req.json().catch(() => null);
+    console.log('POST /pet-diaries - Emergency memory mode');
 
+    // リクエストボディの取得
+    let body;
+    try {
+      body = await req.json();
+      console.log('POST /pet-diaries - Request body parsed');
+    } catch (parseError) {
+      console.error('POST /pet-diaries - Failed to parse JSON:', parseError);
+      return Response.json(
+        { message: 'Invalid JSON in request body' },
+        { status: 400 }
+      );
+    }
+
+    // バリデーション
     if (
       !body ||
       typeof body.authour !== 'string' ||
       typeof body.imageUrl !== 'string'
     ) {
+      console.log('POST /pet-diaries - Invalid request body');
       return Response.json(
         {
           message:
-            'Invalid JSON: expected { authour: string, imageUrl: string }',
+            'Invalid request: expected { authour: string, imageUrl: string }',
+          received: body,
         },
         { status: 400 }
       );
     }
 
-    // ─ 2. 新しいアイテムを作成 ─
+    // 新しいアイテムを作成
     const newPetDiary: PetDiary = {
       id: randomUUID(),
       authour: body.authour,
-      petName: body.petName,
+      petName: body.petName || body.authour,
       imageUrl: body.imageUrl,
-      createdAt: new Date(), // Date型として保存
-      content: body.content || 'AIが自動生成する内容', // contentフィールドも受け取れるように
+      createdAt: new Date(),
+      content: body.content || 'AIが自動生成する内容',
     };
 
-    // ─ 3. 既存データに追加して保存 ─
-    const petDiaries = await readPetDiaries();
-    petDiaries.push(newPetDiary);
-    await writePetDiaries(petDiaries);
+    console.log('POST /pet-diaries - New diary created:', newPetDiary.id);
 
-    // ─ 4. レスポンス ─
-    // Locationヘッダーを削除（必要なければ）、または正しいパスに修正
-    return Response.json(newPetDiary, {
-      status: 201, // "Created"
+    // メモリストレージに追加（ファイルシステム操作なし）
+    memoryStorage.push(newPetDiary);
+    console.log(
+      'POST /pet-diaries - Added to memory storage, total:',
+      memoryStorage.length
+    );
+
+    // シリアライズしてレスポンス
+    const serializedDiary = serializePetDiary(newPetDiary);
+
+    return Response.json(serializedDiary, {
+      status: 201,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
+        'X-Data-Source': 'memory',
       },
     });
   } catch (error) {
-    console.error('Error creating pet diary:', error);
+    console.error('POST /pet-diaries - Unexpected error:', error);
+
     return Response.json(
-      { message: 'Failed to create pet diary' },
+      {
+        message: 'Internal server error while creating diary',
+        error: error instanceof Error ? error.message : 'Unknown error',
+      },
       { status: 500 }
     );
   }
