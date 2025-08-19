@@ -261,7 +261,7 @@ export default function PetDetailPage() {
           </div>
         </div>
       </header>
-      <div className="flex-1 flex flex-col px-4 sm:px-8 md:px-16 lg:px-[240px] py-[40px] max-w-4xl mx-auto w-full">
+      <div className="flex-1 flex flex-col px-4 sm:px-8 md:px-16 lg:px-[240px] py-[40px] mx-auto w-full">
         <Link
           href="/"
           className="w-full h-[24px] flex items-center cursor-pointer"
