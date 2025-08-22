@@ -1,36 +1,10 @@
 // src/app/pet-diaries/route.ts
 // 緊急用：完全にメモリベースのAPI（ファイルシステム操作なし）
 
+import { generateAIResponse } from '@/lib/ai';
+import { readPetDiaries, writePetDiaries } from '@/lib/fs';
 import type { PetDiary } from '@/types/pet-diary';
 import { randomUUID } from 'crypto';
-
-// メモリ上のデータストレージ（サーバー再起動でリセット）
-let memoryStorage: PetDiary[] = [
-  {
-    authour: 'kotone',
-    petName: 'ピノ',
-    id: '7ec6ccc0-e3e5-4ded-a073-2b197393645a',
-    imageUrl: '/images/pino.jpg',
-    createdAt: new Date('2025-08-07T00:00:00.000Z'),
-    content: '今日もウサギは可愛かった',
-  },
-  {
-    authour: 'kotone',
-    petName: 'ユキ',
-    id: '7ec6ccc0-e3e5-4ded-a073-2b197393645b',
-    imageUrl: '/images/yuki.jpg',
-    createdAt: new Date('2025-08-07T00:00:00.000Z'),
-    content: '今日もウサギは可愛かった',
-  },
-  {
-    authour: 'kotone',
-    petName: 'ウィム',
-    id: '7ec6ccc0-e3e5-4ded-a073-2b197393645c',
-    imageUrl: '/images/wim.jpg',
-    createdAt: new Date('2025-08-07T00:00:00.000Z'),
-    content: '今日もウサギは可愛かった',
-  },
-];
 
 function serializePetDiary(diary: PetDiary) {
   return {
@@ -49,13 +23,10 @@ function serializePetDiaries(diaries: PetDiary[]) {
 export async function GET() {
   try {
     console.log('GET /pet-diaries - Emergency memory mode');
-    console.log(
-      'GET /pet-diaries - Memory storage items:',
-      memoryStorage.length
-    );
+    console.log('GET /pet-diaries - Memory storage items:');
 
     // メモリから直接取得（ファイルシステム操作なし）
-    const serializedItems = serializePetDiaries(memoryStorage);
+    const serializedItems = await readPetDiaries();
 
     console.log('GET /pet-diaries - Returning serialized items');
 
@@ -144,24 +115,29 @@ export async function POST(req: Request) {
       );
     }
 
+    const petName = body.petName || body.authour;
+    const userContent = body.content || '';
+    const aiPrompt = `${petName}というペットの日記を書いてください。${userContent ? `内容: ${userContent}` : ''}`;
+
     // 新しいアイテムを作成
+    const aiMessage = await generateAIResponse(aiPrompt);
     const newPetDiary: PetDiary = {
       id: randomUUID(),
       authour: body.authour,
-      petName: body.petName || body.authour,
+      petName: body.petName,
       imageUrl: body.imageUrl,
       createdAt: new Date(),
-      content: body.content || 'AIが自動生成する内容',
+      content: aiMessage || 'AIが自動生成する内容',
     };
 
     console.log('POST /pet-diaries - New diary created:', newPetDiary.id);
 
     // メモリストレージに追加（ファイルシステム操作なし）
-    memoryStorage.push(newPetDiary);
-    console.log(
-      'POST /pet-diaries - Added to memory storage, total:',
-      memoryStorage.length
-    );
+    const diaries = await readPetDiaries();
+    const serialized = serializePetDiary(newPetDiary);
+    diaries.push(newPetDiary);
+    await writePetDiaries(diaries);
+    console.log('POST /pet-diaries - Added to memory storage, total:');
 
     // シリアライズしてレスポンス
     const serializedDiary = serializePetDiary(newPetDiary);

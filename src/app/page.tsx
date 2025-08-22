@@ -71,9 +71,11 @@ export default function Home() {
           </div>
         </div>
         <div className="w-[281px] h-[50px] flex justify-between items-center">
-          <div className="w-[50px] h-[19px] text-white text-[16px] leading-[20px] font-sans">
-            ホーム
-          </div>
+          <Link href={'/new'}>
+            <div className="w-[50px] h-[19px] text-white text-[16px] leading-[20px] font-sans">
+              ホーム
+            </div>
+          </Link>
           <div className="bg-[#e27c63] w-[172px] h-[50px] rounded-[12px] px-[22px] flex justify-between items-center">
             <div className="bg-[#de937c] w-[32px] h-[32px] rounded-[50%] flex justify-center items-center">
               <img
@@ -82,9 +84,11 @@ export default function Home() {
                 className="w-[21px] h-[21px] object-contain"
               />
             </div>
-            <div className="w-[64px] h-[19px] text-white text-[16px] leading-[20px] font-sans">
-              日記一覧
-            </div>
+            <Link href={'/'}>
+              <div className="w-[64px] h-[19px] text-white text-[16px] leading-[20px] font-sans">
+                日記一覧
+              </div>
+            </Link>
             <div className="bg-[#ff9ca9] w-[14px] h-[14px] flex justify-center items-center">
               <img
                 src="/images/星.svg"

@@ -192,9 +192,11 @@ export default function PetEditPage() {
           </div>
         </div>
         <div className="w-[281px] h-[50px] flex justify-between items-center">
-          <div className="w-[50px] h-[19px] text-white text-[16px] leading-[20px] font-sans">
-            ホーム
-          </div>
+          <Link href={'/new'}>
+            <div className="w-[50px] h-[19px] text-white text-[16px] leading-[20px] font-sans">
+              ホーム
+            </div>
+          </Link>
           <div className="bg-[#e27c63] w-[172px] h-[50px] rounded-[12px] px-[22px] flex justify-between items-center">
             <div className="bg-[#de937c] w-[32px] h-[32px] rounded-[50%] flex justify-center items-center">
               <img
