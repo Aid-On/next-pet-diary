@@ -31,7 +31,7 @@ export async function generateAIResponseWithImage(
   const mimeType = imagePath.endsWith('.png') ? 'image/png' : 'image/jpeg';
 
   const result = await generateText({
-    model: openai('gpt-4-vision-preview'), // Vision対応モデル
+    model: openai('gpt-5'), // Vision対応モデル
     messages: [
       {
         role: 'system',

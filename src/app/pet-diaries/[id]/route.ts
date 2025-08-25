@@ -18,16 +18,14 @@ function serializePetDiary(diary: PetDiary) {
 }
 
 export async function GET(_req: Request, { params }: { params: Params }) {
+  const p = await params;
   try {
-    console.log(
-      'GET /pet-diaries/[id] - Emergency memory mode, ID:',
-      params.id
-    );
+    console.log('GET /pet-diaries/[id] - Emergency memory mode, ID:', p.id);
     console.log('GET /pet-diaries/[id] - Memory storage items:');
 
     // メモリから直接検索（ファイルシステム操作なし）
     const items = await readPetDiaries();
-    const item = items.find(it => it.id === params.id);
+    const item = items.find(it => it.id === p.id);
     console.log('GET /pet-diaries/[id] - Found item:', item ? 'Yes' : 'No');
 
     if (!item) {
@@ -58,11 +56,9 @@ export async function GET(_req: Request, { params }: { params: Params }) {
 }
 
 export async function PUT(req: Request, { params }: { params: Params }) {
+  const p = await params;
   try {
-    console.log(
-      'PUT /pet-diaries/[id] - Emergency memory mode, ID:',
-      params.id
-    );
+    console.log('PUT /pet-diaries/[id] - Emergency memory mode, ID:', p.id);
 
     const body = await req.json().catch(() => null);
 
@@ -79,7 +75,7 @@ export async function PUT(req: Request, { params }: { params: Params }) {
     }
     // メモリから検索
     const items = await readPetDiaries();
-    const idx = items.findIndex(it => it.id === params.id);
+    const idx = items.findIndex(it => it.id === p.id);
 
     if (idx === -1) {
       return Response.json({ message: 'Not Found' }, { status: 404 });
@@ -124,13 +120,11 @@ export async function PUT(req: Request, { params }: { params: Params }) {
 }
 
 export async function DELETE(_req: Request, { params }: { params: Params }) {
+  const p = await params;
   try {
-    console.log(
-      'DELETE /pet-diaries/[id] - Emergency memory mode, ID:',
-      params.id
-    );
+    console.log('DELETE /pet-diaries/[id] - Emergency memory mode, ID:', p.id);
     const diaries = await readPetDiaries();
-    const idx = diaries.findIndex(it => it.id === params.id);
+    const idx = diaries.findIndex(it => it.id === p.id);
     if (idx === -1) {
       return Response.json({ message: 'Not Found' }, { status: 404 });
     }
