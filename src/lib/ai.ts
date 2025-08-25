@@ -29,7 +29,7 @@ export async function generateAIResponseWithImage(
   const imageBuffer = await readFile(imagePath);
   const base64Image = imageBuffer.toString('base64');
   const mimeType = imagePath.endsWith('.png') ? 'image/png' : 'image/jpeg';
-  
+
   const result = await generateText({
     model: openai('gpt-4-vision-preview'), // Vision対応モデル
     messages: [
@@ -52,9 +52,8 @@ export async function generateAIResponseWithImage(
       },
     ],
     temperature: 0.7,
-    maxTokens: 1000,
   });
-  
+
   const text = (result.steps as any)[0].content[0].text;
   return text;
 }

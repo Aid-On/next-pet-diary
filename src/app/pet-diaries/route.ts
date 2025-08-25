@@ -1,7 +1,7 @@
 // src/app/pet-diaries/route.ts
 // 緊急用：完全にメモリベースのAPI（ファイルシステム操作なし）
 
-import { generateAIResponse } from '@/lib/ai';
+import { generateAIResponse, generateAIResponseWithImage } from '@/lib/ai';
 import { readPetDiaries, writePetDiaries } from '@/lib/fs';
 import type { PetDiary } from '@/types/pet-diary';
 import { randomUUID } from 'crypto';
@@ -120,7 +120,10 @@ export async function POST(req: Request) {
     const aiPrompt = `${petName}というペットの日記を書いてください。${userContent ? `内容: ${userContent}` : ''}`;
 
     // 新しいアイテムを作成
-    const aiMessage = await generateAIResponse(aiPrompt);
+    const aiMessage = await generateAIResponseWithImage(
+      aiPrompt,
+      body.imageUrl
+    );
     const newPetDiary: PetDiary = {
       id: randomUUID(),
       authour: body.authour,
