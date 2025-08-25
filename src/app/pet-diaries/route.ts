@@ -5,6 +5,7 @@ import { generateAIResponse, generateAIResponseWithImage } from '@/lib/ai';
 import { readPetDiaries, writePetDiaries } from '@/lib/fs';
 import type { PetDiary } from '@/types/pet-diary';
 import { randomUUID } from 'crypto';
+import path from 'path';
 
 function serializePetDiary(diary: PetDiary) {
   return {
@@ -120,9 +121,11 @@ export async function POST(req: Request) {
     const aiPrompt = `${petName}というペットの日記を書いてください。${userContent ? `内容: ${userContent}` : ''}`;
 
     // 新しいアイテムを作成
+    // imageUrlをファイルシステムパスに変換（/uploads/... -> public/uploads/...）
+    const imagePath = path.join(process.cwd(), 'public', body.imageUrl);
     const aiMessage = await generateAIResponseWithImage(
       aiPrompt,
-      body.imageUrl
+      imagePath
     );
     const newPetDiary: PetDiary = {
       id: randomUUID(),
