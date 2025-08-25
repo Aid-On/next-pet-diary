@@ -1,5 +1,6 @@
 import { generateText } from 'ai';
 import { openai } from '@ai-sdk/openai';
+import { readFile } from 'fs/promises';
 
 export async function generateAIResponse(message: string) {
   const result = await generateText({
@@ -16,6 +17,44 @@ export async function generateAIResponse(message: string) {
     ],
     temperature: 0.7, // 0-2の間。高いほど創造的
   });
+  const text = (result.steps as any)[0].content[0].text;
+  return text;
+}
+
+export async function generateAIResponseWithImage(
+  message: string,
+  imagePath: string
+) {
+  // 画像をBase64エンコード
+  const imageBuffer = await readFile(imagePath);
+  const base64Image = imageBuffer.toString('base64');
+  const mimeType = imagePath.endsWith('.png') ? 'image/png' : 'image/jpeg';
+  
+  const result = await generateText({
+    model: openai('gpt-4-vision-preview'), // Vision対応モデル
+    messages: [
+      {
+        role: 'system',
+        content: petDiarypronpt, // ペット日記用のプロンプトを使用
+      },
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'text',
+            text: message,
+          },
+          {
+            type: 'image',
+            image: `data:${mimeType};base64,${base64Image}`,
+          },
+        ],
+      },
+    ],
+    temperature: 0.7,
+    maxTokens: 1000,
+  });
+  
   const text = (result.steps as any)[0].content[0].text;
   return text;
 }
