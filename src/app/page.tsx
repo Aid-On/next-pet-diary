@@ -110,17 +110,21 @@ export default function Home() {
                   className="w-[28px] h-[28px] object-contain"
                 />
               </div>
-              <div className="bg-gradient-to-r from-[#9333EA] to-[#DB2777] w-[210px] h-[35.5px] flex justify-center items-center text-white text-[27px] font-bold">
-                ペット日記一覧
-              </div>
+              <Link href={'/'}>
+                <div className="bg-gradient-to-r from-[#9333EA] to-[#DB2777] w-[210px] h-[35.5px] flex justify-center items-center text-white text-[27px] font-bold">
+                  ペット日記一覧
+                </div>
+              </Link>
             </div>
             <div className="bg-gradient-to-r from-[#9333EA] to-[#DB2777] w-[146px] h-[48px] flex justify-between items-center px-[20px] py-[14.5px] rounded-[12px] cursor-pointer hover:opacity-90 transition-opacity">
               <div className="w-[18px] h-[18px] text-[17px] text-white font-semibold leading-[18px]">
                 ＋
               </div>
-              <div className="w-[80px] h-[19px] text-[15px] text-white font-medium leading-[19px]">
-                新しい日記
-              </div>
+              <Link href={'/new'}>
+                <div className="w-[80px] h-[19px] text-[15px] text-white font-medium leading-[19px]">
+                  新しい日記
+                </div>
+              </Link>
             </div>
           </div>
           <div className="w-full h-auto mt-[32px] flex">

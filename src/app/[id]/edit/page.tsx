@@ -304,7 +304,7 @@ export default function PetEditPage() {
                   </button>
                 </div>
                 <div className="w-[96px] h-[46px] py-[13.5px] px-[20px] flex justify-between cursor-pointer hover:opacity-80 transition-opacity">
-                  <div className="bg-[#e5bdff] w-[16px] h-[16px]">
+                  <div className="bg-[#fca5a5] w-[16px] h-[16px]">
                     <img
                       src="/images/ゴミ箱.png"
                       alt="ゴミ箱"
@@ -313,7 +313,7 @@ export default function PetEditPage() {
                   </div>
                   <button
                     onClick={() => setShowDeleteConfirm(true)}
-                    className="w-[32px] h-[19px] text-[13.6px] text-white font-sans leading-[18px]"
+                    className="w-[32px] h-[19px] text-[13.6px] text-red-600 font-sans leading-[18px]"
                   >
                     削除
                   </button>

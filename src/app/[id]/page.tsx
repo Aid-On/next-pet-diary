@@ -364,7 +364,7 @@ export default function PetDetailPage() {
                       className="w-[16px] h-[16px] object-cover"
                     />
                   </div>
-                  <div className="w-[32px] h-[19px] text-[13.6px] text-white font-sans leading-[18px]">
+                  <div className="w-[32px] h-[19px] text-[13.6px] text-red-600 font-sans leading-[18px]">
                     削除
                   </div>
                 </button>
