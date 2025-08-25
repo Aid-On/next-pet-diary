@@ -53,8 +53,8 @@ export async function generateAIResponseWithImage(
     ],
     temperature: 0.7,
   });
-
-  const text = (result.steps as any)[0].content[0].text;
+  console.log('xxx', result.steps[0].content);
+  const text = (result.steps as any)[0].content[1].text;
   return text;
 }
 
