@@ -218,7 +218,7 @@ export default function PetEditPage() {
           </div>
         </div>
       </header>
-      <div className="flex-1 flex flex-col px-4 sm:px-8 md:px-16 lg:px-[240px] py-[40px] max-w-4xl mx-auto w-full">
+      <div className="flex-1 flex flex-col px-4 sm:px-8 md:px-16 lg:px-[240px] py-[40px] mx-auto w-full">
         <Link
           href={`/${id}`}
           className="w-full h-[24px] flex items-center cursor-pointer"
@@ -252,12 +252,12 @@ export default function PetEditPage() {
         </div>
 
         <div className="w-full h-auto flex flex-col">
-          <div className="w-full aspect-[16/9] max-h-[500px] overflow-hidden relative rounded-t-[16px]">
+          <div className="bg-gray-100 w-full aspect-[16/9] max-h-[500px] overflow-hidden relative rounded-t-[16px]">
             {editData.imageUrl ? (
               <img
                 src={getImageUrl(editData.imageUrl)}
                 alt={editData.petName || 'ペット'}
-                className="absolute inset-0 w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-contain"
                 loading="lazy"
                 onError={e => {
                   e.currentTarget.src = '/images/placeholder.jpg';
@@ -271,16 +271,16 @@ export default function PetEditPage() {
           </div>
           <div className="bg-[#e8e3e8] w-full h-auto flex flex-col rounded-b-[16px] shadow-2xl p-4 sm:p-6 md:p-8">
             <div className="w-full h-[46px] flex justify-between items-center">
-              <div className="bg-[#F3E8FF] w-[170px] h-[40px] rounded-[9px] px-[16px] flex items-center">
-                <div className=" w-full h-[26px] flex items-center">
-                  <div className="w-[26px] h-[26px] rounded-[50%] flex justify-center items-center">
+              <div className="bg-[#F3E8FF] w-auto h-[40px] rounded-[9px] px-[16px] flex items-center">
+                <div className="w-full h-[26px] flex items-center">
+                  <div className="w-[18px] h-[18px] flex justify-center items-center">
                     <img
                       src="/images/日付.png"
                       alt="日付"
                       className="w-[18px] h-[18px] object-cover"
                     />
                   </div>
-                  <div className="w-[100px] h-[17px] text-[#6B7280] leading-[18px] text-[14px] font-sans flex ml-[6px]">
+                  <div className="w-auto h-[17px] text-[#6B7280] leading-[18px] text-[14px] font-sans flex ml-[6px]">
                     {formatDate(diaryEntry.createdAt)}
                   </div>
                 </div>

@@ -301,11 +301,11 @@ export default function PetDetailPage() {
         )}
 
         <div className="w-full h-auto flex flex-col mt-[32px]">
-          <div className="w-full aspect-[16/9] max-h-[500px] overflow-hidden relative rounded-t-[16px]">
+          <div className="w-full aspect-[16/9] max-h-[500px] overflow-hidden relative rounded-t-[16px] bg-gray-100">
             <img
               src={getImageUrl(diaryEntry.imageUrl)}
               alt={diaryEntry.petName || diaryEntry.authour || 'ペット'}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-contain"
               loading="lazy"
               onError={e => {
                 e.currentTarget.src = '/images/placeholder.jpg';

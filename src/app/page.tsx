@@ -145,7 +145,7 @@ export default function Home() {
                 {diaries.map((diary: PetDiary) => (
                   <Link key={diary.id} href={`/${diary.id}`} className="block">
                     <div className="w-full max-w-[324px] mx-auto bg-white/90 backdrop-blur rounded-[16px] shadow-lg cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-300">
-                      <div className="w-full aspect-[324/224] rounded-t-[16px] overflow-hidden relative">
+                      <div className="w-full  aspect-[324/224] rounded-t-[16px] overflow-hidden relative">
                         <img
                           src={getImageUrl(diary.imageUrl)}
                           alt={diary.authour}
