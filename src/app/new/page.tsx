@@ -378,7 +378,7 @@ export default function NewDiaryPage() {
                     type="text"
                     value={petName}
                     onChange={e => setPetName(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9333EA] focus:border-transparent"
+                    className="w-full p-3 text-gray-600 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9333EA] focus:border-transparent"
                     placeholder="例：ポチ"
                     disabled={uploading}
                   />
@@ -392,7 +392,7 @@ export default function NewDiaryPage() {
                     type="text"
                     value={authorName}
                     onChange={e => setAuthorName(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9333EA] focus:border-transparent"
+                    className="w-full p-3 text-gray-600 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9333EA] focus:border-transparent"
                     placeholder="例：山田太郎"
                     disabled={uploading}
                   />
@@ -407,7 +407,7 @@ export default function NewDiaryPage() {
                   <textarea
                     value={memo}
                     onChange={e => setMemo(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9333EA] focus:border-transparent resize-vertical min-h-[100px] max-h-[200px]"
+                    className="w-full p-3 text-gray-600 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9333EA] focus:border-transparent resize-vertical min-h-[100px] max-h-[200px]"
                     placeholder="例：今日は公園でボール遊びをしました。とても元気に走り回っていました。"
                     disabled={uploading}
                     maxLength={500}
