@@ -323,7 +323,7 @@ export default function PetDetailPage() {
                       className="w-[18px] h-[18px] object-cover"
                     />
                   </div>
-                  <div className="w-[100px] h-[17px] text-[#6B7280] leading-[18px] text-[14px] font-sans flex ml-[6px]">
+                  <div className="w-auto h-[17px] text-[#6B7280] leading-[18px] text-[14px] font-sans flex ml-[6px]">
                     {formatDate(diaryEntry.createdAt)}
                   </div>
                 </div>

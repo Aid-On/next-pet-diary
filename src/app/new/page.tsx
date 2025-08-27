@@ -22,6 +22,9 @@ export default function NewDiaryPage() {
   const [dragActive, setDragActive] = useState<boolean>(false);
   const [petName, setPetName] = useState<string>('');
   const [authorName, setAuthorName] = useState<string>('');
+  const [remarks, setRemarks] = useState<string>('');
+  // 備考フィールドを追加
+  const [memo, setMemo] = useState<string>('');
 
   useEffect(() => {
     fetchDiaries();
@@ -137,6 +140,10 @@ export default function NewDiaryPage() {
       return;
     }
 
+    if (!remarks.trim()) {
+      setError('備考を入力してください');
+    }
+
     setUploading(true);
     setError(null);
 
@@ -171,7 +178,7 @@ export default function NewDiaryPage() {
 
       const { imageUrl } = await uploadResponse.json();
 
-      // ペット日記作成API呼び出し
+      // ペット日記作成API呼び出し - 備考も含める
       const diaryResponse = await fetch('/pet-diaries', {
         method: 'POST',
         headers: {
@@ -181,6 +188,7 @@ export default function NewDiaryPage() {
           authour: authorName,
           petName: petName,
           imageUrl: imageUrl,
+          memo: memo.trim() || null, // 備考が空の場合はnullを送信
         }),
       });
 
@@ -195,6 +203,8 @@ export default function NewDiaryPage() {
       setPreviewUrl(null);
       setPetName('');
       setAuthorName('');
+      setRemarks('');
+      setMemo('');
 
       // 作成した日記の詳細ページに遷移
       setTimeout(() => {
@@ -217,8 +227,10 @@ export default function NewDiaryPage() {
     setPreviewUrl(null);
     setPetName('');
     setAuthorName('');
+    setMemo('');
     setError(null);
     setUploadSuccess(false);
+    setRemarks('');
   };
 
   return (
@@ -386,6 +398,25 @@ export default function NewDiaryPage() {
                   />
                 </div>
 
+                {/* 備考・出来事フィールド - 「日記を作成」ボタンの前に配置 */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    今日の出来事・備考
+                    <span className="text-xs text-gray-500 ml-1">（任意）</span>
+                  </label>
+                  <textarea
+                    value={memo}
+                    onChange={e => setMemo(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9333EA] focus:border-transparent resize-vertical min-h-[100px] max-h-[200px]"
+                    placeholder="例：今日は公園でボール遊びをしました。とても元気に走り回っていました。"
+                    disabled={uploading}
+                    maxLength={500}
+                  />
+                  <div className="text-xs text-gray-500 mt-1 text-right">
+                    {memo.length}/500文字
+                  </div>
+                </div>
+
                 <button
                   onClick={handleUpload}
                   disabled={uploading || !petName.trim() || !authorName.trim()}
@@ -438,7 +469,7 @@ export default function NewDiaryPage() {
                 />
               </div>
               <div className="w-auto h-auto ml-[10px] sm:ml-[11px] md:ml-[12px] leading-[20px] sm:leading-[22px] md:leading-[24px] text-[#374151] text-[12px] sm:text-[13px] md:text-[14px]">
-                AIが写真を分析し、ペットの様子を自動で日記にします
+                ペット名・飼い主名を入力し、必要に応じて今日の出来事を記録します
               </div>
             </div>
             <div className="w-full h-auto flex items-start mt-[12px] sm:mt-[14px] md:mt-[16px]">
@@ -450,7 +481,7 @@ export default function NewDiaryPage() {
                 />
               </div>
               <div className="w-auto h-auto ml-[10px] sm:ml-[11px] md:ml-[12px] leading-[20px] sm:leading-[22px] md:leading-[24px] text-[#374151] text-[12px] sm:text-[13px] md:text-[14px]">
-                必要に応じて日記の内容を編集できます
+                AIが写真と入力情報を分析し、ペットの様子を自動で日記にします
               </div>
             </div>
             <div className="w-full h-auto flex items-start mt-[12px] sm:mt-[14px] md:mt-[16px]">

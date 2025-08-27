@@ -117,16 +117,19 @@ export async function POST(req: Request) {
     }
 
     const petName = body.petName || body.authour;
-    const userContent = body.content || '';
-    const aiPrompt = `${petName}というペットの日記を書いてください。${userContent ? `内容: ${userContent}` : ''}`;
+    const userMemo = body.memo || ''; // 備考フィールドを正しく取得
+
+    // AIプロンプトに備考を含める
+    let aiPrompt = `${petName}というペットの日記を書いてください。`;
+    if (userMemo) {
+      aiPrompt += `\n\n飼い主からの今日の出来事・備考：\n${userMemo}\n\n`;
+    }
+    aiPrompt += `画像の内容と上記の情報を参考にして、愛情のこもった日記を作成してください。`;
 
     // 新しいアイテムを作成
     // imageUrlをファイルシステムパスに変換（/uploads/... -> public/uploads/...）
     const imagePath = path.join(process.cwd(), 'public', body.imageUrl);
-    const aiMessage = await generateAIResponseWithImage(
-      aiPrompt,
-      imagePath
-    );
+    const aiMessage = await generateAIResponseWithImage(aiPrompt, imagePath);
     const newPetDiary: PetDiary = {
       id: randomUUID(),
       authour: body.authour,
@@ -140,10 +143,9 @@ export async function POST(req: Request) {
 
     // メモリストレージに追加（ファイルシステム操作なし）
     const diaries = await readPetDiaries();
-    const serialized = serializePetDiary(newPetDiary);
     diaries.push(newPetDiary);
     await writePetDiaries(diaries);
-    console.log('POST /pet-diaries - Added to memory storage, total:');
+    console.log('POST /pet-diaries - Added to memory storage');
 
     // シリアライズしてレスポンス
     const serializedDiary = serializePetDiary(newPetDiary);
