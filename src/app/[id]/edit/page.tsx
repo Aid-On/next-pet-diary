@@ -23,6 +23,7 @@ export default function PetEditPage() {
     imageUrl: '',
     content: '',
     petName: '',
+    petCharacteristics: '', // ペット特徴フィールドを追加
   });
 
   // 画像URLを修正（相対パスを絶対パスに変換）
@@ -70,6 +71,7 @@ export default function PetEditPage() {
         imageUrl: data.imageUrl,
         content: data.content,
         petName: data.petName || data.authour || '',
+        petCharacteristics: data.petCharacteristics || '', // ペット特徴を設定
       });
       setLoading(false);
     } catch (err) {
@@ -106,6 +108,7 @@ export default function PetEditPage() {
           imageUrl: normalizedImageUrl,
           content: editData.content,
           petName: editData.petName,
+          petCharacteristics: editData.petCharacteristics, // ペット特徴を送信
           createdAt: diaryEntry.createdAt.toISOString(),
         }),
       });
@@ -321,8 +324,30 @@ export default function PetEditPage() {
               </div>
             </div>
 
+            {/* ペット特徴編集フィールドを追加 */}
+            <div className="w-full h-auto flex flex-col mt-[24px] mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ペットの特徴・性格
+              </label>
+              <textarea
+                value={editData.petCharacteristics}
+                onChange={e =>
+                  setEditData({
+                    ...editData,
+                    petCharacteristics: e.target.value,
+                  })
+                }
+                className="w-full min-h-[80px] max-h-[150px] p-3 border border-gray-300 rounded-lg resize-y focus:ring-2 focus:ring-[#9333EA] focus:border-transparent text-sm bg-white"
+                placeholder="ペットの特徴や性格を入力してください"
+                maxLength={300}
+              />
+              <div className="text-xs text-gray-500 mt-1 text-right">
+                {editData.petCharacteristics.length}/300文字
+              </div>
+            </div>
+
             {/* 内容編集 - 詳細画面と同じ位置・スタイル */}
-            <div className="w-full h-auto flex text-[15.3px] text-[#1F2937] leading-[34px] mt-[24px]">
+            <div className="w-full h-auto flex text-[15.3px] text-[#1F2937] leading-[34px]">
               <textarea
                 value={editData.content}
                 onChange={e =>

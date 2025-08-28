@@ -72,6 +72,11 @@ export async function PUT(req: Request, { params }: { params: Params }) {
       return Response.json({ message: 'Invalid JSON' }, { status: 400 });
     } else if (body.createdAt && typeof body.createdAt !== 'string') {
       return Response.json({ message: 'Invalid JSON' }, { status: 400 });
+    } else if (
+      body.petCharacteristics &&
+      typeof body.petCharacteristics !== 'string'
+    ) {
+      return Response.json({ message: 'Invalid JSON' }, { status: 400 });
     }
     // メモリから検索
     const items = await readPetDiaries();
@@ -90,6 +95,10 @@ export async function PUT(req: Request, { params }: { params: Params }) {
       imageUrl: body.imageUrl ?? current.imageUrl,
       createdAt: body.createdAt ? new Date(body.createdAt) : current.createdAt,
       content: body.content ?? current.content,
+      petCharacteristics:
+        body.petCharacteristics !== undefined
+          ? body.petCharacteristics.trim() || undefined
+          : current.petCharacteristics, // ペット特徴フィールドの更新
     };
 
     // メモリストレージを更新（ファイルシステム操作なし）

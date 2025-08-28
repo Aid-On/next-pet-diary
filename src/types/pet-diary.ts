@@ -5,6 +5,7 @@ export interface PetDiary {
   imageUrl: string;
   createdAt: Date;
   content: string;
+  petCharacteristics?: string; // ペットの特徴を追加
 }
 
 export interface DiaryEntry {
@@ -14,4 +15,5 @@ export interface DiaryEntry {
   date: string;
   imageUrl: string;
   petName: string;
+  petCharacteristics?: string; // ペットの特徴を追加
 }
