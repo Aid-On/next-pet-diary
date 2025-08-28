@@ -6,6 +6,7 @@ export interface PetDiary {
   createdAt: Date;
   content: string;
   petCharacteristics?: string; // ペットの特徴を追加
+  firstPersonPronoun?: string; // 一人称を追加
 }
 
 export interface DiaryEntry {
@@ -16,4 +17,5 @@ export interface DiaryEntry {
   imageUrl: string;
   petName: string;
   petCharacteristics?: string; // ペットの特徴を追加
+  firstPersonPronoun?: string; // 一人称を追加
 }

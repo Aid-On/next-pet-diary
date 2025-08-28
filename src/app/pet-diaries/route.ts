@@ -52,6 +52,7 @@ export async function GET() {
           imageUrl: '/images/pino.jpg',
           createdAt: '2025-08-07T00:00:00.000Z',
           content: '今日もウサギは可愛かった',
+          firstPersonPronoun: 'ぼく',
         },
         {
           authour: 'kotone',
@@ -60,6 +61,7 @@ export async function GET() {
           imageUrl: '/images/yuki.jpg',
           createdAt: '2025-08-07T00:00:00.000Z',
           content: '今日もウサギは可愛かった',
+          firstPersonPronoun: 'わたし',
         },
         {
           authour: 'kotone',
@@ -68,6 +70,7 @@ export async function GET() {
           imageUrl: '/images/wim.jpg',
           createdAt: '2025-08-07T00:00:00.000Z',
           content: '今日もウサギは可愛かった',
+          firstPersonPronoun: 'おれ',
         },
       ],
       {
@@ -116,20 +119,77 @@ export async function POST(req: Request) {
       );
     }
 
+    // 追加のバリデーション
+    if (body.petName && typeof body.petName !== 'string') {
+      return Response.json(
+        { message: 'Invalid petName: expected string' },
+        { status: 400 }
+      );
+    }
+
+    if (body.memo && typeof body.memo !== 'string') {
+      return Response.json(
+        { message: 'Invalid memo: expected string' },
+        { status: 400 }
+      );
+    }
+
+    if (
+      body.petCharacteristics &&
+      typeof body.petCharacteristics !== 'string'
+    ) {
+      return Response.json(
+        { message: 'Invalid petCharacteristics: expected string' },
+        { status: 400 }
+      );
+    }
+
+    if (
+      body.firstPersonPronoun &&
+      typeof body.firstPersonPronoun !== 'string'
+    ) {
+      return Response.json(
+        { message: 'Invalid firstPersonPronoun: expected string' },
+        { status: 400 }
+      );
+    }
+
     const petName = body.petName || body.authour;
     const userMemo = body.memo || ''; // 備考フィールドを正しく取得
+    const firstPersonPronoun = body.firstPersonPronoun || 'ぼく'; // 一人称を取得
+    const petCharacteristics = body.petCharacteristics || ''; // ペット特徴を取得
 
-    // AIプロンプトに備考を含める
+    // AIプロンプトに備考と特徴を含める
     let aiPrompt = `${petName}というペットの日記を書いてください。`;
+
+    if (petCharacteristics) {
+      aiPrompt += `\n\nペットの特徴・性格：\n${petCharacteristics}\n\n`;
+    }
+
     if (userMemo) {
       aiPrompt += `\n\n飼い主からの今日の出来事・備考：\n${userMemo}\n\n`;
     }
+
     aiPrompt += `画像の内容と上記の情報を参考にして、愛情のこもった日記を作成してください。`;
+
+    console.log('POST /pet-diaries - AI prompt created for pet:', petName);
+    console.log(
+      'POST /pet-diaries - First person pronoun:',
+      firstPersonPronoun
+    );
 
     // 新しいアイテムを作成
     // imageUrlをファイルシステムパスに変換（/uploads/... -> public/uploads/...）
     const imagePath = path.join(process.cwd(), 'public', body.imageUrl);
-    const aiMessage = await generateAIResponseWithImage(aiPrompt, imagePath);
+    console.log('POST /pet-diaries - Image path:', imagePath);
+
+    // AI生成（一人称を含める）
+    const aiMessage = await generateAIResponseWithImage(
+      aiPrompt,
+      imagePath,
+      firstPersonPronoun
+    ); // 一人称を渡す
+
     const newPetDiary: PetDiary = {
       id: randomUUID(),
       authour: body.authour,
@@ -137,9 +197,15 @@ export async function POST(req: Request) {
       imageUrl: body.imageUrl,
       createdAt: new Date(),
       content: aiMessage || 'AIが自動生成する内容',
+      petCharacteristics: body.petCharacteristics?.trim() || undefined, // ペット特徴
+      firstPersonPronoun: firstPersonPronoun, // 一人称を保存
     };
 
     console.log('POST /pet-diaries - New diary created:', newPetDiary.id);
+    console.log(
+      'POST /pet-diaries - Diary content length:',
+      newPetDiary.content.length
+    );
 
     // メモリストレージに追加（ファイルシステム操作なし）
     const diaries = await readPetDiaries();
@@ -160,10 +226,18 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error('POST /pet-diaries - Unexpected error:', error);
 
+    // エラーの詳細をログ出力
+    if (error instanceof Error) {
+      console.error('POST /pet-diaries - Error name:', error.name);
+      console.error('POST /pet-diaries - Error message:', error.message);
+      console.error('POST /pet-diaries - Error stack:', error.stack);
+    }
+
     return Response.json(
       {
         message: 'Internal server error while creating diary',
         error: error instanceof Error ? error.message : 'Unknown error',
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );

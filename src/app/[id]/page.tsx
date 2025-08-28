@@ -4,9 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { validateImageUrl } from '@/lib/image-utils';
 
-export default function PetEditPage() {
+export default function PetDetailPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
@@ -15,16 +14,7 @@ export default function PetEditPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false);
-  const [saving, setSaving] = useState<boolean>(false);
   const [deleting, setDeleting] = useState<boolean>(false);
-
-  // 編集用の状態
-  const [editData, setEditData] = useState({
-    imageUrl: '',
-    content: '',
-    petName: '',
-    petCharacteristics: '', // ペット特徴フィールドを追加
-  });
 
   // 画像URLを修正（相対パスを絶対パスに変換）
   const getImageUrl = (url: string) => {
@@ -67,12 +57,6 @@ export default function PetEditPage() {
         createdAt: new Date(data.createdAt),
       };
       setDiaryEntry(diaryWithDate);
-      setEditData({
-        imageUrl: data.imageUrl,
-        content: data.content,
-        petName: data.petName || data.authour || '',
-        petCharacteristics: data.petCharacteristics || '', // ペット特徴を設定
-      });
       setLoading(false);
     } catch (err) {
       if (err instanceof Error) {
@@ -81,51 +65,6 @@ export default function PetEditPage() {
         setError('エラーが発生しました');
       }
       setLoading(false);
-    }
-  };
-
-  const handleSave = async () => {
-    if (!diaryEntry) return;
-
-    // URL validation
-    const urlValidation = validateImageUrl(editData.imageUrl);
-    if (!urlValidation.isValid) {
-      setError(urlValidation.message || '無効な画像URLです');
-      return;
-    }
-
-    setSaving(true);
-    setError(null);
-    try {
-      const normalizedImageUrl = getImageUrl(editData.imageUrl);
-
-      const response = await fetch(`/pet-diaries/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          imageUrl: normalizedImageUrl,
-          content: editData.content,
-          petName: editData.petName,
-          petCharacteristics: editData.petCharacteristics, // ペット特徴を送信
-          createdAt: diaryEntry.createdAt.toISOString(),
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('更新に失敗しました');
-      }
-
-      // 更新成功後、詳細ページにリダイレクト
-      router.push(`/${id}`);
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('更新中にエラーが発生しました');
-      }
-      setSaving(false);
     }
   };
 
@@ -209,7 +148,7 @@ export default function PetEditPage() {
               />
             </div>
             <div className="w-[64px] h-[19px] text-white text-[16px] leading-[20px] font-sans">
-              日記編集
+              日記詳細
             </div>
             <div className="bg-[#ff9ca9] w-[14px] h-[14px] flex justify-center items-center">
               <img
@@ -223,7 +162,7 @@ export default function PetEditPage() {
       </header>
       <div className="flex-1 flex flex-col px-4 sm:px-8 md:px-16 lg:px-[240px] py-[40px] mx-auto w-full">
         <Link
-          href={`/${id}`}
+          href="/"
           className="w-full h-[24px] flex items-center cursor-pointer"
         >
           <div className="w-[18px] h-[18px]">
@@ -234,43 +173,21 @@ export default function PetEditPage() {
             />
           </div>
           <div className="w-auto h-[19px] text-[#9333EA] text-[14px] font-sans ml-[4px]">
-            詳細に戻る
+            一覧に戻る
           </div>
         </Link>
 
-        {/* 画像URL入力フィールド */}
-        <div className="w-full mt-[32px] mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            画像URL
-          </label>
-          <input
-            type="text"
-            value={editData.imageUrl}
-            onChange={e =>
-              setEditData({ ...editData, imageUrl: e.target.value })
-            }
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9333EA] focus:border-transparent text-sm"
-            placeholder="画像URLを入力してください"
-          />
-        </div>
-
-        <div className="w-full h-auto flex flex-col">
+        <div className="w-full h-auto flex flex-col mt-[32px]">
           <div className="bg-gray-100 w-full aspect-[16/9] max-h-[500px] overflow-hidden relative rounded-t-[16px]">
-            {editData.imageUrl ? (
-              <img
-                src={getImageUrl(editData.imageUrl)}
-                alt={editData.petName || 'ペット'}
-                className="absolute inset-0 w-full h-full object-contain"
-                loading="lazy"
-                onError={e => {
-                  e.currentTarget.src = '/images/placeholder.jpg';
-                }}
-              />
-            ) : (
-              <div className="absolute inset-0 w-full h-full bg-gray-100 flex items-center justify-center rounded-t-[16px]">
-                <div className="text-gray-400 text-lg">画像プレビュー</div>
-              </div>
-            )}
+            <img
+              src={getImageUrl(diaryEntry.imageUrl)}
+              alt={diaryEntry.petName || 'ペット'}
+              className="absolute inset-0 w-full h-full object-contain"
+              loading="lazy"
+              onError={e => {
+                e.currentTarget.src = '/images/placeholder.jpg';
+              }}
+            />
           </div>
           <div className="bg-[#e8e3e8] w-full h-auto flex flex-col rounded-b-[16px] shadow-2xl p-4 sm:p-6 md:p-8">
             <div className="w-full h-[46px] flex justify-between items-center">
@@ -290,22 +207,13 @@ export default function PetEditPage() {
               </div>
               <div className="flex space-x-3">
                 <Link
-                  href={`/${id}`}
-                  className="bg-white w-[82px] h-[46px] border-[#6B7280] border-[1px] rounded-[12px] flex justify-center items-center cursor-pointer hover:bg-gray-50 transition-colors"
+                  href={`/${id}/edit`}
+                  className="bg-white w-[82px] h-[46px] border-[#9333EA] border-[1px] rounded-[12px] flex justify-center items-center cursor-pointer hover:bg-[#F3E8FF] transition-colors"
                 >
-                  <div className="w-auto h-[19px] text-[#6B7280] text-[14px] font-sans">
-                    キャンセル
+                  <div className="w-auto h-[19px] text-[#9333EA] text-[14px] font-sans">
+                    編集
                   </div>
                 </Link>
-                <div className="bg-white w-[82px] h-[46px] border-[#9333EA] border-[1px] rounded-[12px] flex justify-center items-center cursor-pointer hover:bg-[#F3E8FF] transition-colors">
-                  <button
-                    onClick={handleSave}
-                    disabled={saving}
-                    className="w-auto h-[19px] text-[#9333EA] text-[14px] font-sans disabled:opacity-50"
-                  >
-                    {saving ? '保存中' : '保存'}
-                  </button>
-                </div>
                 <div className="w-[96px] h-[46px] py-[13.5px] px-[20px] flex justify-between cursor-pointer hover:opacity-80 transition-opacity">
                   <div className="bg-[#fca5a5] w-[16px] h-[16px]">
                     <img
@@ -324,54 +232,30 @@ export default function PetEditPage() {
               </div>
             </div>
 
-            {/* ペット特徴編集フィールドを追加 */}
-            <div className="w-full h-auto flex flex-col mt-[24px] mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                ペットの特徴・性格
-              </label>
-              <textarea
-                value={editData.petCharacteristics}
-                onChange={e =>
-                  setEditData({
-                    ...editData,
-                    petCharacteristics: e.target.value,
-                  })
-                }
-                className="w-full min-h-[80px] max-h-[150px] p-3 border border-gray-300 rounded-lg resize-y focus:ring-2 focus:ring-[#9333EA] focus:border-transparent text-sm bg-white"
-                placeholder="ペットの特徴や性格を入力してください"
-                maxLength={300}
-              />
-              <div className="text-xs text-gray-500 mt-1 text-right">
-                {editData.petCharacteristics.length}/300文字
+            {/* ペットの特徴表示（存在する場合） */}
+            {diaryEntry.petCharacteristics && (
+              <div className="w-full h-auto flex flex-col mt-[24px] mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  ペットの特徴・性格
+                </label>
+                <div className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700">
+                  {diaryEntry.petCharacteristics}
+                </div>
+              </div>
+            )}
+
+            {/* 内容表示 - 詳細画面と同じ位置・スタイル */}
+            <div className="w-full h-auto flex text-[15.3px] text-[#1F2937] leading-[34px] mt-[24px]">
+              <div className="w-full whitespace-pre-wrap">
+                {diaryEntry.content}
               </div>
             </div>
 
-            {/* 内容編集 - 詳細画面と同じ位置・スタイル */}
-            <div className="w-full h-auto flex text-[15.3px] text-[#1F2937] leading-[34px]">
-              <textarea
-                value={editData.content}
-                onChange={e =>
-                  setEditData({ ...editData, content: e.target.value })
-                }
-                className="w-full min-h-[120px] p-4 border border-gray-300 rounded-lg resize-y focus:ring-2 focus:ring-[#9333EA] focus:border-transparent text-[15.3px] leading-[34px] bg-white"
-                placeholder="日記の内容を入力してください"
-              />
-            </div>
-
-            {/* ペット名編集 - 詳細画面と同じ位置・スタイル */}
+            {/* ペット名表示 - 詳細画面と同じ位置・スタイル */}
             <div className="w-full h-auto flex items-center mt-[16px]">
-              <div className="text-[14px] text-[#6B7280] font-sans mr-2">
-                ペット名:
+              <div className="text-[14px] text-[#6B7280] font-sans">
+                ペット名: {diaryEntry.petName || diaryEntry.authour}
               </div>
-              <input
-                type="text"
-                value={editData.petName}
-                onChange={e =>
-                  setEditData({ ...editData, petName: e.target.value })
-                }
-                className="px-3 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-[#9333EA] focus:border-transparent text-[14px] text-[#6B7280] bg-white"
-                placeholder="ペット名を入力してください"
-              />
             </div>
           </div>
         </div>

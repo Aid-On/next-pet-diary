@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { validateImageUrl } from '@/lib/image-utils';
+import PetSelector from '@/components/PetSelector';
+import { savePetInfo } from '@/lib/pet-info-storage';
 
 export default function PetEditPage() {
   const params = useParams();
@@ -23,8 +25,42 @@ export default function PetEditPage() {
     imageUrl: '',
     content: '',
     petName: '',
-    petCharacteristics: '', // ペット特徴フィールドを追加
+    petCharacteristics: '', // ペット特徴フィールド
+    firstPersonPronoun: 'ぼく', // 一人称フィールドを追加
   });
+  // ペット情報保存チェック
+  const [shouldSavePetInfo, setShouldSavePetInfo] = useState<boolean>(false);
+
+  const handlePetSelect = (
+    selectedPetName: string,
+    selectedCharacteristics: string,
+    selectedFirstPersonPronoun: string
+  ) => {
+    setEditData(prev => ({
+      ...prev,
+      petName: selectedPetName,
+      petCharacteristics: selectedCharacteristics,
+      firstPersonPronoun: selectedFirstPersonPronoun,
+    }));
+  };
+
+  const savePetInfoIfNeeded = () => {
+    if (
+      shouldSavePetInfo &&
+      editData.petName.trim() &&
+      editData.petCharacteristics.trim()
+    ) {
+      try {
+        savePetInfo({
+          petName: editData.petName.trim(),
+          petCharacteristics: editData.petCharacteristics.trim(),
+          firstPersonPronoun: editData.firstPersonPronoun, // 一人称を含める
+        });
+      } catch (error) {
+        console.warn('Failed to save pet info:', error);
+      }
+    }
+  };
 
   // 画像URLを修正（相対パスを絶対パスに変換）
   const getImageUrl = (url: string) => {
@@ -72,6 +108,7 @@ export default function PetEditPage() {
         content: data.content,
         petName: data.petName || data.authour || '',
         petCharacteristics: data.petCharacteristics || '', // ペット特徴を設定
+        firstPersonPronoun: data.firstPersonPronoun || 'ぼく', // 一人称を設定
       });
       setLoading(false);
     } catch (err) {
@@ -109,6 +146,7 @@ export default function PetEditPage() {
           content: editData.content,
           petName: editData.petName,
           petCharacteristics: editData.petCharacteristics, // ペット特徴を送信
+          firstPersonPronoun: editData.firstPersonPronoun, // 一人称を送信
           createdAt: diaryEntry.createdAt.toISOString(),
         }),
       });
@@ -116,6 +154,9 @@ export default function PetEditPage() {
       if (!response.ok) {
         throw new Error('更新に失敗しました');
       }
+
+      // ペット情報を保存（必要に応じて）
+      savePetInfoIfNeeded();
 
       // 更新成功後、詳細ページにリダイレクト
       router.push(`/${id}`);
@@ -324,6 +365,63 @@ export default function PetEditPage() {
               </div>
             </div>
 
+            {/* ペット情報選択コンポーネントを追加 */}
+            <div className="w-full h-auto flex flex-col mt-[24px] mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                保存済みペット情報
+              </label>
+              <PetSelector
+                onSelectPet={handlePetSelect}
+                currentPetName={editData.petName}
+                currentCharacteristics={editData.petCharacteristics}
+                currentFirstPersonPronoun={editData.firstPersonPronoun}
+                disabled={saving}
+              />
+            </div>
+
+            {/* 一人称選択フィールドを追加 */}
+            <div className="w-full h-auto flex flex-col mt-[24px] mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                日記で使う一人称
+              </label>
+              <div className="flex flex-wrap gap-2 mb-2">
+                {['ぼく', 'わたし', 'おれ', 'あたし'].map(pronoun => (
+                  <button
+                    key={pronoun}
+                    type="button"
+                    onClick={() =>
+                      setEditData({
+                        ...editData,
+                        firstPersonPronoun: pronoun,
+                      })
+                    }
+                    className={`px-3 py-1 text-sm rounded-full border-2 transition-colors ${
+                      editData.firstPersonPronoun === pronoun
+                        ? 'bg-[#9333EA] text-white border-[#9333EA]'
+                        : 'bg-white text-gray-600 border-gray-300 hover:border-[#9333EA]'
+                    }`}
+                    disabled={saving}
+                  >
+                    {pronoun}
+                  </button>
+                ))}
+              </div>
+              <input
+                type="text"
+                value={editData.firstPersonPronoun}
+                onChange={e =>
+                  setEditData({
+                    ...editData,
+                    firstPersonPronoun: e.target.value,
+                  })
+                }
+                className="w-full p-2 text-gray-600 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9333EA] focus:border-transparent text-sm bg-white"
+                placeholder="カスタム一人称を入力"
+                disabled={saving}
+                maxLength={10}
+              />
+            </div>
+
             {/* ペット特徴編集フィールドを追加 */}
             <div className="w-full h-auto flex flex-col mt-[24px] mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -337,13 +435,34 @@ export default function PetEditPage() {
                     petCharacteristics: e.target.value,
                   })
                 }
-                className="w-full min-h-[80px] max-h-[150px] p-3 border border-gray-300 rounded-lg resize-y focus:ring-2 focus:ring-[#9333EA] focus:border-transparent text-sm bg-white"
+                className="w-full text-gray-600 min-h-[80px] max-h-[150px] p-3 border border-gray-300 rounded-lg resize-y focus:ring-2 focus:ring-[#9333EA] focus:border-transparent text-sm bg-white"
                 placeholder="ペットの特徴や性格を入力してください"
                 maxLength={300}
               />
               <div className="text-xs text-gray-500 mt-1 text-right">
                 {editData.petCharacteristics.length}/300文字
               </div>
+
+              {/* ペット情報保存のチェックボックス */}
+              {editData.petName.trim() &&
+                editData.petCharacteristics.trim() && (
+                  <div className="flex items-center mt-2">
+                    <input
+                      type="checkbox"
+                      id="save-pet-info"
+                      checked={shouldSavePetInfo}
+                      onChange={e => setShouldSavePetInfo(e.target.checked)}
+                      className="mr-2"
+                      disabled={saving}
+                    />
+                    <label
+                      htmlFor="save-pet-info"
+                      className="text-sm text-gray-600"
+                    >
+                      このペット情報を保存して再利用する
+                    </label>
+                  </div>
+                )}
             </div>
 
             {/* 内容編集 - 詳細画面と同じ位置・スタイル */}

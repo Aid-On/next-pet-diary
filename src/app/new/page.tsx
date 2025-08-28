@@ -5,6 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { PetDiary } from '@/types/pet-diary';
 import { useRouter } from 'next/navigation';
+import PetSelector from '@/components/PetSelector';
+import { savePetInfo } from '@/lib/pet-info-storage';
 
 export default function NewDiaryPage() {
   const router = useRouter();
@@ -25,6 +27,36 @@ export default function NewDiaryPage() {
   const [remarks, setRemarks] = useState<string>('');
   // 備考フィールドを追加
   const [memo, setMemo] = useState<string>('');
+  // ペットの特徴フィールドを追加
+  const [petCharacteristics, setPetCharacteristics] = useState<string>('');
+  // 一人称の状態を追加
+  const [firstPersonPronoun, setFirstPersonPronoun] = useState<string>('ぼく');
+  // ペット情報の保存と選択機能
+  const [shouldSavePetInfo, setShouldSavePetInfo] = useState<boolean>(true);
+
+  const handlePetSelect = (
+    selectedPetName: string,
+    selectedCharacteristics: string,
+    selectedFirstPersonPronoun: string
+  ) => {
+    setPetName(selectedPetName);
+    setPetCharacteristics(selectedCharacteristics);
+    setFirstPersonPronoun(selectedFirstPersonPronoun);
+  };
+
+  const savePetInfoIfNeeded = () => {
+    if (shouldSavePetInfo && petName.trim() && petCharacteristics.trim()) {
+      try {
+        savePetInfo({
+          petName: petName.trim(),
+          petCharacteristics: petCharacteristics.trim(),
+          firstPersonPronoun: firstPersonPronoun, // 一人称を含める
+        });
+      } catch (error) {
+        console.warn('Failed to save pet info:', error);
+      }
+    }
+  };
 
   useEffect(() => {
     fetchDiaries();
@@ -178,7 +210,10 @@ export default function NewDiaryPage() {
 
       const { imageUrl } = await uploadResponse.json();
 
-      // ペット日記作成API呼び出し - 備考も含める
+      // ペット情報を保存（必要に応じて）
+      savePetInfoIfNeeded();
+
+      // ペット日記作成API呼び出し - 特徴と一人称も含める
       const diaryResponse = await fetch('/pet-diaries', {
         method: 'POST',
         headers: {
@@ -189,6 +224,8 @@ export default function NewDiaryPage() {
           petName: petName,
           imageUrl: imageUrl,
           memo: memo.trim() || null, // 備考が空の場合はnullを送信
+          petCharacteristics: petCharacteristics.trim() || null, // ペット特徴が空の場合はnull
+          firstPersonPronoun: firstPersonPronoun, // 一人称を送信
         }),
       });
 
@@ -205,6 +242,8 @@ export default function NewDiaryPage() {
       setAuthorName('');
       setRemarks('');
       setMemo('');
+      setPetCharacteristics('');
+      setFirstPersonPronoun('ぼく');
 
       // 作成した日記の詳細ページに遷移
       setTimeout(() => {
@@ -228,6 +267,9 @@ export default function NewDiaryPage() {
     setPetName('');
     setAuthorName('');
     setMemo('');
+    setPetCharacteristics('');
+    setFirstPersonPronoun('ぼく'); // 一人称をデフォルト値にリセット
+    setShouldSavePetInfo(true);
     setError(null);
     setUploadSuccess(false);
     setRemarks('');
@@ -370,6 +412,20 @@ export default function NewDiaryPage() {
 
               {/* 入力フォーム */}
               <div className="lg:w-1/2 flex flex-col gap-4">
+                {/* ペット情報選択コンポーネント */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    保存済みペット情報
+                  </label>
+                  <PetSelector
+                    onSelectPet={handlePetSelect}
+                    currentPetName={petName}
+                    currentCharacteristics={petCharacteristics}
+                    currentFirstPersonPronoun={firstPersonPronoun}
+                    disabled={uploading}
+                  />
+                </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     ペット名 *
@@ -396,6 +452,79 @@ export default function NewDiaryPage() {
                     placeholder="例：山田太郎"
                     disabled={uploading}
                   />
+                </div>
+
+                {/* 一人称選択フィールドを追加 */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    日記で使う一人称
+                    <span className="text-xs text-gray-500 ml-1">（任意）</span>
+                  </label>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {['ぼく', 'わたし', 'おれ', 'あたし'].map(pronoun => (
+                      <button
+                        key={pronoun}
+                        type="button"
+                        onClick={() => setFirstPersonPronoun(pronoun)}
+                        className={`px-3 py-1 text-sm rounded-full border-2 transition-colors ${
+                          firstPersonPronoun === pronoun
+                            ? 'bg-[#9333EA] text-white border-[#9333EA]'
+                            : 'bg-white text-gray-600 border-gray-300 hover:border-[#9333EA]'
+                        }`}
+                        disabled={uploading}
+                      >
+                        {pronoun}
+                      </button>
+                    ))}
+                  </div>
+                  <input
+                    type="text"
+                    value={firstPersonPronoun}
+                    onChange={e => setFirstPersonPronoun(e.target.value)}
+                    className="w-full p-2 text-gray-600 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9333EA] focus:border-transparent text-sm"
+                    placeholder="カスタム一人称を入力"
+                    disabled={uploading}
+                    maxLength={10}
+                  />
+                </div>
+
+                {/* ペットの特徴フィールド */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    ペットの特徴・性格
+                    <span className="text-xs text-gray-500 ml-1">（任意）</span>
+                  </label>
+                  <textarea
+                    value={petCharacteristics}
+                    onChange={e => setPetCharacteristics(e.target.value)}
+                    className="w-full p-3 text-gray-600 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9333EA] focus:border-transparent resize-vertical min-h-[80px] max-h-[150px]"
+                    placeholder="例：とても活発で人懐っこい性格。ボール遊びが大好き。少し怖がりな面もある。"
+                    disabled={uploading}
+                    maxLength={300}
+                  />
+                  <div className="text-xs text-gray-500 mt-1 text-right">
+                    {petCharacteristics.length}/300文字
+                  </div>
+
+                  {/* ペット情報保存のチェックボックス */}
+                  {petName.trim() && petCharacteristics.trim() && (
+                    <div className="flex items-center mt-2">
+                      <input
+                        type="checkbox"
+                        id="save-pet-info"
+                        checked={shouldSavePetInfo}
+                        onChange={e => setShouldSavePetInfo(e.target.checked)}
+                        className="mr-2"
+                        disabled={uploading}
+                      />
+                      <label
+                        htmlFor="save-pet-info"
+                        className="text-sm text-gray-600"
+                      >
+                        このペット情報を保存して再利用する
+                      </label>
+                    </div>
+                  )}
                 </div>
 
                 {/* 備考・出来事フィールド - 「日記を作成」ボタンの前に配置 */}
@@ -469,7 +598,7 @@ export default function NewDiaryPage() {
                 />
               </div>
               <div className="w-auto h-auto ml-[10px] sm:ml-[11px] md:ml-[12px] leading-[20px] sm:leading-[22px] md:leading-[24px] text-[#374151] text-[12px] sm:text-[13px] md:text-[14px]">
-                ペット名・飼い主名を入力し、必要に応じて今日の出来事を記録します
+                ペット名・飼い主名・ペットの特徴・一人称を入力し、必要に応じて今日の出来事を記録します
               </div>
             </div>
             <div className="w-full h-auto flex items-start mt-[12px] sm:mt-[14px] md:mt-[16px]">
@@ -481,7 +610,7 @@ export default function NewDiaryPage() {
                 />
               </div>
               <div className="w-auto h-auto ml-[10px] sm:ml-[11px] md:ml-[12px] leading-[20px] sm:leading-[22px] md:leading-[24px] text-[#374151] text-[12px] sm:text-[13px] md:text-[14px]">
-                AIが写真と入力情報を分析し、ペットの様子を自動で日記にします
+                AIが写真と入力情報を分析し、ペットの性格に合わせた日記を自動生成します
               </div>
             </div>
             <div className="w-full h-auto flex items-start mt-[12px] sm:mt-[14px] md:mt-[16px]">
