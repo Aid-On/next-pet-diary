@@ -20,7 +20,7 @@ export default function Header() {
         <div className="flex justify-between items-center h-[60px]">
           <Link href="/" className="group h-full flex items-center">
             <img
-              src="/images/pet-diary-logo001.png"
+              src="/images/pet-diary-logo004.png"
               alt="ペット日記ロゴ"
               className="h-full object-contain group-hover:scale-105 transition-transform duration-300"
             />

@@ -341,7 +341,7 @@ export default function PetDetailPage() {
       {/* 削除確認ダイアログ - router使用 */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50">
-          <div className="relative bg-white/25 backdrop-blur-[25px] border border-white/40 p-6 rounded-[20px] shadow-[0_16px_48px_0_rgba(31,38,135,0.4)] w-[400px] before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/20 before:to-transparent before:rounded-[20px] before:pointer-events-none">
+          <div className="relative bg-white/90 backdrop-blur-[15px] border border-white/60 p-6 rounded-[20px] shadow-[0_16px_48px_0_rgba(0,0,0,0.15)] w-[400px]">
             <div className="relative z-10">
               <h3 className="text-lg font-semibold mb-4 text-gray-800">
                 削除の確認
@@ -355,17 +355,17 @@ export default function PetDetailPage() {
                 <button
                   onClick={() => setShowDeleteConfirm(false)}
                   disabled={deleting}
-                  className="relative px-4 py-2 bg-white/20 backdrop-blur-[15px] border border-white/30 text-gray-700 rounded-[12px] shadow-[0_4px_16px_0_rgba(31,38,135,0.15)] hover:bg-white/25 hover:shadow-[0_6px_20px_0_rgba(31,38,135,0.25)] transition-all duration-300 disabled:opacity-50 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/15 before:to-transparent before:rounded-[12px] before:pointer-events-none"
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-[12px] hover:bg-gray-300 transition-colors disabled:opacity-50"
                 >
-                  <span className="relative z-10">キャンセル</span>
+                  キャンセル
                 </button>
                 {!isUsingFallback && (
                   <button
                     onClick={handleDelete}
                     disabled={deleting}
-                    className="relative px-4 py-2 bg-red-400/30 backdrop-blur-[15px] border border-red-400/40 text-red-700 rounded-[12px] shadow-[0_4px_16px_0_rgba(239,68,68,0.2)] hover:bg-red-400/40 hover:shadow-[0_6px_20px_0_rgba(239,68,68,0.3)] transition-all duration-300 disabled:opacity-50 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-red-200/20 before:to-transparent before:rounded-[12px] before:pointer-events-none"
+                    className="px-4 py-2 bg-red-600 text-white rounded-[12px] hover:bg-red-700 transition-colors disabled:opacity-50"
                   >
-                    <span className="relative z-10">{deleting ? '削除中...' : '削除'}</span>
+                    {deleting ? '削除中...' : '削除'}
                   </button>
                 )}
               </div>

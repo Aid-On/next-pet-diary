@@ -491,29 +491,31 @@ export default function PetEditPage() {
 
       {/* 削除確認ダイアログ */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl w-[400px]">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">
-              削除の確認
-            </h3>
-            <p className="text-gray-600 mb-6">
-              この日記を削除してもよろしいですか？この操作は取り消せません。
-            </p>
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={() => setShowDeleteConfirm(false)}
-                disabled={deleting}
-                className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors disabled:opacity-50"
-              >
-                キャンセル
-              </button>
-              <button
-                onClick={handleDelete}
-                disabled={deleting}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors disabled:opacity-50"
-              >
-                {deleting ? '削除中...' : '削除'}
-              </button>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50">
+          <div className="relative bg-white/90 backdrop-blur-[15px] border border-white/60 p-6 rounded-[20px] shadow-[0_16px_48px_0_rgba(0,0,0,0.15)] w-[400px]">
+            <div className="relative z-10">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                削除の確認
+              </h3>
+              <p className="text-gray-700 mb-6">
+                この日記を削除してもよろしいですか？この操作は取り消せません。
+              </p>
+              <div className="flex justify-end space-x-3">
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  disabled={deleting}
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-[12px] hover:bg-gray-300 transition-colors disabled:opacity-50"
+                >
+                  キャンセル
+                </button>
+                <button
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  className="px-4 py-2 bg-red-600 text-white rounded-[12px] hover:bg-red-700 transition-colors disabled:opacity-50"
+                >
+                  {deleting ? '削除中...' : '削除'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
