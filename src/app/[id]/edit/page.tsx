@@ -53,7 +53,7 @@ export default function PetEditPage() {
 
   const fetchDiaryEntry = async () => {
     try {
-      const response = await fetch(`/pet-diaries/${id}`);
+      const response = await fetch(`/api/pet-diaries/${id}`);
       if (!response.ok) {
         if (response.status === 404) {
           throw new Error('指定された日記が見つかりません');
@@ -97,7 +97,7 @@ export default function PetEditPage() {
     try {
       const normalizedImageUrl = getImageUrl(editData.imageUrl);
 
-      const response = await fetch(`/pet-diaries/${id}`, {
+      const response = await fetch(`/api/pet-diaries/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -129,7 +129,7 @@ export default function PetEditPage() {
   const handleDelete = async () => {
     setDeleting(true);
     try {
-      const response = await fetch(`/pet-diaries/${id}`, {
+      const response = await fetch(`/api/pet-diaries/${id}`, {
         method: 'DELETE',
       });
 

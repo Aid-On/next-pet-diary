@@ -17,7 +17,7 @@ export default function Home() {
   const fetchDiaries = async () => {
     try {
       // Next.jsのAPIルートを使用（ポート番号不要）
-      const response = await fetch('/pet-diaries');
+      const response = await fetch('/api/pet-diaries');
       if (!response.ok) {
         throw new Error('Failed to fetch diaries');
       }
@@ -56,72 +56,68 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col h-screen">
-      <header className="bg-gradient-to-r from-[#9333EA] via-[#EC4899] to-[#F97316] w-full justify-between items-center h-[82px] min-h-[82px] max-h-[82px] shadow-xl flex p-4 box-border">
-        <div className="w-[165px] h-[40px] flex justify-between items-center">
-          <div className="bg-[#a159d6] w-[40px] h-[40px] flex justify-center items-center rounded-[12px] shadow-lg">
-            <img
-              src="/images/肉球.svg"
-              alt="肉球"
-              className="w-[28px] h-[28px] object-contain"
-            />
-          </div>
-          <div className="w-[120px] h-[30px] text-white text-[22px] font-semibold flex items-center">
-            ペット日記
-          </div>
-        </div>
-        <div className="w-[281px] h-[50px] flex justify-between items-center">
-          <Link href={'/new'}>
-            <div className="w-[50px] h-[19px] text-white text-[16px] leading-[20px] font-sans">
-              ホーム
-            </div>
-          </Link>
-          <div className="bg-[#e27c63] w-[172px] h-[50px] rounded-[12px] px-[22px] flex justify-between items-center">
-            <div className="bg-[#de937c] w-[32px] h-[32px] rounded-[50%] flex justify-center items-center">
-              <img
-                src="/images/本.svg"
-                alt="本"
-                className="w-[21px] h-[21px] object-contain"
-              />
-            </div>
-            <Link href={'/'}>
-              <div className="w-[64px] h-[19px] text-white text-[16px] leading-[20px] font-sans">
-                日記一覧
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
+      <header className="sticky top-0 z-50 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-500 text-white shadow-lg py-4">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center">
+            <Link href="/" className="flex items-center gap-2 text-xl font-bold text-white">
+              <div className="bg-white/10 backdrop-blur-sm p-3 rounded-2xl shadow-lg group transition-all duration-300 hover:bg-white/20 hover:scale-105">
+                <img
+                  src="/images/肉球.svg"
+                  alt="肉球"
+                  className="w-[24px] h-[24px] object-contain group-hover:animate-pulse"
+                />
               </div>
+              <span className="text-2xl tracking-tight">ペット日記</span>
             </Link>
-            <div className="bg-[#ff9ca9] w-[14px] h-[14px] flex justify-center items-center">
-              <img
-                src="/images/星.svg"
-                alt="星"
-                className="w-[14px] h-[14px] object-contain"
-              />
-            </div>
+            <nav className="hidden md:block">
+              <ul className="flex gap-2">
+                <li>
+                  <div className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/20 backdrop-blur-sm shadow-lg">
+                    <div className="p-1.5 rounded-full bg-white/20">
+                      <img
+                        src="/images/本.svg"
+                        alt="本"
+                        className="w-[18px] h-[18px] object-contain"
+                      />
+                    </div>
+                    <span className="font-medium">日記一覧</span>
+                    <img
+                      src="/images/星.svg"
+                      alt="星"
+                      className="w-[12px] h-[12px] object-contain ml-1 animate-pulse"
+                    />
+                  </div>
+                </li>
+                <li>
+                  <Link href="/new" className="flex items-center gap-2 px-5 py-2.5 rounded-xl hover:bg-white/10 transition-all duration-300">
+                    <span className="font-medium">新しい日記</span>
+                  </Link>
+                </li>
+              </ul>
+            </nav>
           </div>
         </div>
       </header>
       <div className="flex-1 flex px-[16px]">
-        <div className="w-full flex flex-col">
-          <div className="w-full h-[48px] mt-[40px] flex justify-between items-center">
-            <div className=" w-[246px] h-[36px] flex justify-between items-center">
-              <div className="w-[30px] h-[30px] flex justify-center items-center">
-                <img
-                  src="/images/本2.png"
-                  alt="本2"
-                  className="w-[28px] h-[28px] object-contain"
-                />
-              </div>
-              <div className="bg-gradient-to-r from-[#9333EA] to-[#DB2777] w-[210px] h-[35.5px] flex justify-center items-center text-white text-[27px] font-bold">
+        <div className="w-full flex flex-col max-w-4xl mx-auto">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8 mt-[40px]">
+            <h1 className="text-3xl font-bold flex items-center text-gray-800">
+              <img
+                src="/images/本2.png"
+                alt="本2"
+                className="w-[28px] h-[28px] object-contain text-purple-600 mr-2"
+              />
+              <span className="bg-gradient-to-r from-purple-600 to-pink-600 text-transparent bg-clip-text">
                 ペット日記一覧
-              </div>
-            </div>
-            <div className="bg-gradient-to-r from-[#9333EA] to-[#DB2777] w-[146px] h-[48px] flex justify-between items-center px-[20px] py-[14.5px] rounded-[12px] cursor-pointer hover:opacity-90 transition-opacity">
-              <div className="w-[18px] h-[18px] text-[17px] text-white font-semibold leading-[18px]">
+              </span>
+            </h1>
+            <Link href="/new" className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-5 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center self-start md:self-auto">
+              <div className="w-[18px] h-[18px] text-[17px] text-white font-semibold leading-[18px] mr-2">
                 ＋
               </div>
-              <div className="w-[80px] h-[19px] text-[15px] text-white font-medium leading-[19px]">
-                新しい日記
-              </div>
-            </div>
+              新しい日記
+            </Link>
           </div>
           <div className="w-full h-auto mt-[32px] flex">
             {loading ? (
@@ -137,10 +133,10 @@ export default function Home() {
                 <div className="text-gray-500 text-xl">日記がありません</div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[37px]">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[37px]">
                 {diaries.map((diary: PetDiary) => (
                   <Link key={diary.id} href={`/${diary.id}`} className="block">
-                    <div className="w-full max-w-[324px] mx-auto bg-white/90 backdrop-blur rounded-[16px] shadow-lg cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-300">
+                    <div className="w-full bg-white/90 backdrop-blur rounded-[16px] shadow-lg cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-300">
                       <div className="w-full aspect-[324/224] rounded-t-[16px] overflow-hidden relative">
                         <img
                           src={getImageUrl(diary.imageUrl)}

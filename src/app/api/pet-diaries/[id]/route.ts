@@ -5,7 +5,7 @@ import { readPetDiaries, writePetDiaries } from '@/lib/fs';
 import type { PetDiary } from '@/types/pet-diary';
 import { read } from 'fs';
 
-type Params = { id: string };
+type Params = Promise<{ id: string }>;
 
 function serializePetDiary(diary: PetDiary) {
   return {

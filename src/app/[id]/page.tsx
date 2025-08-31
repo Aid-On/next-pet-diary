@@ -82,7 +82,7 @@ export default function PetDetailPage() {
 
       // APIを試行
       try {
-        const response = await fetch(`/pet-diaries/${id}`);
+        const response = await fetch(`/api/pet-diaries/${id}`);
 
         if (response.ok) {
           const data = await response.json();
@@ -137,7 +137,7 @@ export default function PetDetailPage() {
 
     setDeleting(true);
     try {
-      const response = await fetch(`/pet-diaries/${id}`, {
+      const response = await fetch(`/api/pet-diaries/${id}`, {
         method: 'DELETE',
       });
 

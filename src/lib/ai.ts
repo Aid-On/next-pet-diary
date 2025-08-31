@@ -17,8 +17,7 @@ export async function generateAIResponse(message: string) {
     ],
     temperature: 0.7, // 0-2の間。高いほど創造的
   });
-  const text = (result.steps as any)[0].content[0].text;
-  return text;
+  return result.text;
 }
 
 export async function generateAIResponseWithImage(
@@ -54,8 +53,7 @@ export async function generateAIResponseWithImage(
     temperature: 0.7,
   });
 
-  const text = (result.steps as any)[0].content[0].text;
-  return text;
+  return result.text;
 }
 
 const petDiarypronpt = `# ペット日記システム用AIプロンプト
