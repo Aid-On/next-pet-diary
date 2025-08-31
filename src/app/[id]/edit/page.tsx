@@ -15,6 +15,7 @@ import GlassCard from '@/components/GlassCard';
 import GlassTag from '@/components/GlassTag';
 import GlassInput from '@/components/GlassInput';
 import GlassTextarea from '@/components/GlassTextarea';
+import GlassDatePicker from '@/components/GlassDatePicker';
 
 export default function PetEditPage() {
   const params = useParams();
@@ -35,6 +36,7 @@ export default function PetEditPage() {
     petName: '',
     petCharacteristics: '',
     firstPersonPronoun: 'ぼく',
+    createdAt: new Date(),
   });
   // ペット情報保存チェック
   const [shouldSavePetInfo, setShouldSavePetInfo] = useState<boolean>(false);
@@ -143,6 +145,7 @@ export default function PetEditPage() {
         petName: data.petName || data.authour || '',
         petCharacteristics: data.petCharacteristics || '',
         firstPersonPronoun: data.firstPersonPronoun || 'ぼく',
+        createdAt: new Date(data.createdAt),
       });
       setLoading(false);
     } catch (err) {
@@ -181,7 +184,7 @@ export default function PetEditPage() {
           petName: editData.petName,
           petCharacteristics: editData.petCharacteristics,
           firstPersonPronoun: editData.firstPersonPronoun,
-          createdAt: diaryEntry.createdAt.toISOString(),
+          createdAt: editData.createdAt.toISOString(),
         }),
       });
 
@@ -323,9 +326,16 @@ export default function PetEditPage() {
               </div>
               
               <div className="w-full h-[46px] flex justify-between items-center mb-6">
-                <GlassTag icon={Calendar} variant="gray" className="h-[40px]">
-                  {formatDate(diaryEntry.createdAt)}
-                </GlassTag>
+                <div className="flex-1 max-w-xs">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    日付
+                  </label>
+                  <GlassDatePicker
+                    value={editData.createdAt}
+                    onChange={(date) => setEditData({ ...editData, createdAt: date })}
+                    disabled={saving}
+                  />
+                </div>
                 <div className="flex space-x-3">
                   <Link href={`/${id}`}>
                     <GlassButton variant="secondary">

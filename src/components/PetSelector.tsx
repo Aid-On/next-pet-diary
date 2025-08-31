@@ -117,10 +117,9 @@ export default function PetSelector({
 
           {savedPets.map(pet => (
             <div key={pet.id} className="relative">
-              <button
-                type="button"
+              <div
                 onClick={() => handleSelectPet(pet)}
-                className="w-full p-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                className="w-full p-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0 cursor-pointer"
               >
                 <div className="flex justify-between items-start">
                   <div className="flex-1 min-w-0">
@@ -141,7 +140,10 @@ export default function PetSelector({
                   </div>
                   <button
                     type="button"
-                    onClick={e => setShowDeleteConfirm(pet.id)}
+                    onClick={e => {
+                      e.stopPropagation();
+                      setShowDeleteConfirm(pet.id);
+                    }}
                     className="ml-2 p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded"
                     title="削除"
                   >
@@ -160,7 +162,7 @@ export default function PetSelector({
                     </svg>
                   </button>
                 </div>
-              </button>
+              </div>
 
               {/* 削除確認ダイアログ */}
               {showDeleteConfirm === pet.id && (
