@@ -1,10 +1,12 @@
 'use client';
 import { PetDiary } from '@/types/pet-diary';
 import GradientText from '@/components/GradientText';
+import Header from '@/components/Header';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { ArrowLeft, Trash2, Calendar } from 'lucide-react';
 
 // フォールバックデータ
 const FALLBACK_DIARIES: PetDiary[] = [
@@ -223,50 +225,21 @@ export default function PetDetailPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-cyan-100">
-      <header className="sticky top-0 z-50 bg-white/20 backdrop-blur-md border-b border-white/30 text-white shadow-lg py-4">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center">
-            <Link href="/" className="flex items-center gap-2 text-xl font-bold text-white">
-              <div className="bg-white/10 backdrop-blur-sm p-3 rounded-2xl shadow-lg group transition-all duration-300 hover:bg-white/20 hover:scale-105">
-                <img
-                  src="/images/肉球.svg"
-                  alt="肉球"
-                  className="w-[24px] h-[24px] object-contain group-hover:animate-pulse"
-                />
-              </div>
-              <GradientText variant="header" className="text-2xl tracking-tight">ペット日記</GradientText>
-            </Link>
-            <nav className="hidden md:block">
-              <ul className="flex gap-2">
-                <li>
-                  <Link href="/" className="flex items-center gap-2 px-5 py-2.5 rounded-xl hover:bg-white/10 transition-all duration-300">
-                    <GradientText variant="nav">日記一覧</GradientText>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/new" className="flex items-center gap-2 px-5 py-2.5 rounded-xl hover:bg-white/10 transition-all duration-300">
-                    <GradientText variant="nav">新しい日記</GradientText>
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-      </header>
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-pink-200 via-purple-200 to-cyan-200 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-pink-300/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-cyan-300/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+        <div className="absolute top-3/4 left-1/3 w-64 h-64 bg-purple-300/15 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2s'}}></div>
+      </div>
+      <Header />
       <div className="flex-1 flex flex-col px-4 sm:px-8 md:px-16 lg:px-[240px] py-[40px] mx-auto w-full">
         <Link
           href="/"
-          className="w-full h-[24px] flex items-center cursor-pointer"
+          className="w-full h-[24px] flex items-center cursor-pointer hover:opacity-80 transition-opacity"
         >
-          <div className="w-[18px] h-[18px]">
-            <img
-              src="/images/左矢印.png"
-              alt="左矢印"
-              className="w-[18px] h-[18px] object-cover"
-            />
-          </div>
-          <div className="w-auto h-[19px] text-[#9333EA] text-[14px] font-sans ml-[4px]">
+          <ArrowLeft size={18} className="text-purple-600/80" />
+          <div className="w-auto h-[19px] text-purple-600/80 text-[14px] font-sans ml-[4px]">
             日記一覧に戻る
           </div>
         </Link>
@@ -291,30 +264,27 @@ export default function PetDetailPage() {
           </div>
         )}
 
-        <div className="w-full h-auto flex flex-col mt-[32px]">
-          <div className="bg-gray-100 w-full aspect-[16/9] max-h-[500px] overflow-hidden relative rounded-t-[16px]">
-            <img
-              src={getImageUrl(diaryEntry.imageUrl)}
-              alt={diaryEntry.petName || 'ペット'}
-              className="absolute inset-0 w-full h-full object-contain"
-              loading="lazy"
-              onError={e => {
-                e.currentTarget.src = '/images/placeholder.jpg';
-              }}
-            />
-          </div>
-          <div className="bg-[#e8e3e8] w-full h-auto flex flex-col rounded-b-[16px] shadow-2xl p-4 sm:p-6 md:p-8">
-            <div className="w-full h-[46px] flex justify-between items-center">
-              <div className="bg-[#F3E8FF] w-auto h-[40px] rounded-[9px] px-[16px] flex items-center">
-                <div className="w-full h-[26px] flex items-center">
+        <div className="w-full h-auto flex flex-col mt-[32px] relative z-10">
+          <div className="relative bg-white/20 backdrop-blur-[20px] border border-white/30 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] rounded-[20px] overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/20 before:to-transparent before:rounded-[20px] before:pointer-events-none">
+            <div className="w-full aspect-[16/9] max-h-[500px] overflow-hidden relative rounded-t-[20px]">
+              <img
+                src={getImageUrl(diaryEntry.imageUrl)}
+                alt={diaryEntry.petName || 'ペット'}
+                className="absolute inset-0 w-full h-full object-contain"
+                loading="lazy"
+                onError={e => {
+                  e.currentTarget.src = '/images/placeholder.jpg';
+                }}
+              />
+            </div>
+            <div className="relative bg-white/15 backdrop-blur-[15px] w-full h-auto flex flex-col rounded-b-[20px] p-4 sm:p-6 md:p-8 border-t border-white/20">
+            <div className="w-full h-[46px] flex justify-between items-center relative z-10">
+              <div className="relative bg-white/20 backdrop-blur-[15px] border border-white/30 w-auto h-[40px] rounded-[12px] px-[16px] flex items-center shadow-[0_4px_16px_0_rgba(31,38,135,0.15)] before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/15 before:to-transparent before:rounded-[12px] before:pointer-events-none">
+                <div className="w-full h-[26px] flex items-center relative z-10">
                   <div className="w-[18px] h-[18px] flex justify-center items-center">
-                    <img
-                      src="/images/日付.png"
-                      alt="日付"
-                      className="w-[18px] h-[18px] object-cover"
-                    />
+                    <Calendar size={18} className="text-gray-600" />
                   </div>
-                  <div className="w-auto h-[17px] text-[#6B7280] leading-[18px] text-[14px] font-sans flex ml-[6px]">
+                  <div className="w-auto h-[17px] text-gray-700 leading-[18px] text-[14px] font-sans flex ml-[6px]">
                     {formatDate(diaryEntry.createdAt)}
                   </div>
                 </div>
@@ -322,86 +292,83 @@ export default function PetDetailPage() {
               <div className="flex space-x-3">
                 <Link
                   href={`/${id}/edit`}
-                  className="bg-white w-[82px] h-[46px] border-[#9333EA] border-[1px] rounded-[12px] flex justify-center items-center cursor-pointer hover:bg-[#F3E8FF] transition-colors"
+                  className="relative bg-white/20 backdrop-blur-[15px] border border-white/30 w-[82px] h-[46px] rounded-[12px] flex justify-center items-center cursor-pointer shadow-[0_4px_16px_0_rgba(31,38,135,0.15)] hover:bg-white/25 hover:shadow-[0_6px_20px_0_rgba(31,38,135,0.25)] hover:scale-105 transition-all duration-300 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/15 before:to-transparent before:rounded-[12px] before:pointer-events-none"
                 >
-                  <div className="w-auto h-[19px] text-[#9333EA] text-[14px] font-sans">
+                  <div className="w-auto h-[19px] text-gray-700 text-[14px] font-sans relative z-10">
                     編集
                   </div>
                 </Link>
-                <div className="w-[96px] h-[46px] py-[13.5px] px-[20px] flex justify-between cursor-pointer hover:opacity-80 transition-opacity">
-                  <div className="bg-[#fca5a5] w-[16px] h-[16px]">
-                    <img
-                      src="/images/ゴミ箱.png"
-                      alt="ゴミ箱"
-                      className="w-[16px] h-[16px] object-cover"
-                    />
-                  </div>
-                  <button
-                    onClick={() => setShowDeleteConfirm(true)}
-                    className="w-[32px] h-[19px] text-[13.6px] text-red-600 font-sans leading-[18px]"
-                  >
+                <button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="relative bg-white/15 backdrop-blur-[15px] border border-white/25 w-[96px] h-[46px] rounded-[12px] flex items-center justify-center gap-2 cursor-pointer shadow-[0_4px_16px_0_rgba(31,38,135,0.1)] hover:bg-red-400/20 hover:border-red-400/30 hover:shadow-[0_6px_20px_0_rgba(239,68,68,0.2)] transition-all duration-300 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/10 before:to-transparent before:rounded-[12px] before:pointer-events-none"
+                >
+                  <Trash2 size={16} className="text-red-600 relative z-10" />
+                  <span className="text-[13.6px] text-red-600 font-sans relative z-10">
                     削除
-                  </button>
-                </div>
+                  </span>
+                </button>
               </div>
             </div>
             {/* ペットの特徴表示（存在する場合） */}
             {diaryEntry.petCharacteristics && (
-              <div className="w-full h-auto flex flex-col mt-[24px] mb-4">
+              <div className="w-full h-auto flex flex-col mt-[24px] mb-4 relative z-10">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   ペットの特徴・性格
                 </label>
-                <div className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700">
-                  {diaryEntry.petCharacteristics}
+                <div className="relative w-full p-3 bg-white/15 backdrop-blur-[15px] border border-white/30 rounded-[12px] text-sm text-gray-700 shadow-[0_2px_8px_0_rgba(31,38,135,0.1)] before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/10 before:to-transparent before:rounded-[12px] before:pointer-events-none">
+                  <span className="relative z-10">{diaryEntry.petCharacteristics}</span>
                 </div>
               </div>
             )}
 
-            <div className="w-full h-auto flex text-[15.3px] text-[#1F2937] leading-[34px] mt-[24px]">
+            <div className="w-full h-auto flex text-[15.3px] text-gray-800 leading-[34px] mt-[24px] relative z-10">
               <div className="w-full whitespace-pre-wrap">
                 {diaryEntry.content}
               </div>
             </div>
             {(diaryEntry.petName || diaryEntry.authour) && (
-              <div className="w-full h-auto flex items-center mt-[16px]">
-                <div className="text-[14px] text-[#6B7280] font-sans">
+              <div className="w-full h-auto flex items-center mt-[16px] relative z-10">
+                <div className="text-[14px] text-gray-600 font-sans">
                   ペット名: {diaryEntry.petName || diaryEntry.authour}
                 </div>
               </div>
             )}
+            </div>
           </div>
         </div>
       </div>
 
       {/* 削除確認ダイアログ - router使用 */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl w-[400px]">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">
-              削除の確認
-            </h3>
-            <p className="text-gray-600 mb-6">
-              {isUsingFallback
-                ? 'サンプルデータは削除できません。'
-                : 'この日記を削除してもよろしいですか？この操作は取り消せません。'}
-            </p>
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={() => setShowDeleteConfirm(false)}
-                disabled={deleting}
-                className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors disabled:opacity-50"
-              >
-                キャンセル
-              </button>
-              {!isUsingFallback && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50">
+          <div className="relative bg-white/25 backdrop-blur-[25px] border border-white/40 p-6 rounded-[20px] shadow-[0_16px_48px_0_rgba(31,38,135,0.4)] w-[400px] before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/20 before:to-transparent before:rounded-[20px] before:pointer-events-none">
+            <div className="relative z-10">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                削除の確認
+              </h3>
+              <p className="text-gray-700 mb-6">
+                {isUsingFallback
+                  ? 'サンプルデータは削除できません。'
+                  : 'この日記を削除してもよろしいですか？この操作は取り消せません。'}
+              </p>
+              <div className="flex justify-end space-x-3">
                 <button
-                  onClick={handleDelete}
+                  onClick={() => setShowDeleteConfirm(false)}
                   disabled={deleting}
-                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors disabled:opacity-50"
+                  className="relative px-4 py-2 bg-white/20 backdrop-blur-[15px] border border-white/30 text-gray-700 rounded-[12px] shadow-[0_4px_16px_0_rgba(31,38,135,0.15)] hover:bg-white/25 hover:shadow-[0_6px_20px_0_rgba(31,38,135,0.25)] transition-all duration-300 disabled:opacity-50 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/15 before:to-transparent before:rounded-[12px] before:pointer-events-none"
                 >
-                  {deleting ? '削除中...' : '削除'}
+                  <span className="relative z-10">キャンセル</span>
                 </button>
-              )}
+                {!isUsingFallback && (
+                  <button
+                    onClick={handleDelete}
+                    disabled={deleting}
+                    className="relative px-4 py-2 bg-red-400/30 backdrop-blur-[15px] border border-red-400/40 text-red-700 rounded-[12px] shadow-[0_4px_16px_0_rgba(239,68,68,0.2)] hover:bg-red-400/40 hover:shadow-[0_6px_20px_0_rgba(239,68,68,0.3)] transition-all duration-300 disabled:opacity-50 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-red-200/20 before:to-transparent before:rounded-[12px] before:pointer-events-none"
+                  >
+                    <span className="relative z-10">{deleting ? '削除中...' : '削除'}</span>
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>

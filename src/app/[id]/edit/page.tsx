@@ -4,10 +4,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
 import { validateImageUrl } from '@/lib/image-utils';
 import PetSelector from '@/components/PetSelector';
 import { savePetInfo } from '@/lib/pet-info-storage';
 import GradientText from '@/components/GradientText';
+import Header from '@/components/Header';
 
 export default function PetEditPage() {
   const params = useParams();
@@ -248,50 +250,21 @@ export default function PetEditPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-cyan-100">
-      <header className="sticky top-0 z-50 bg-white/20 backdrop-blur-md border-b border-white/30 text-white shadow-lg py-4">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center">
-            <Link href="/" className="flex items-center gap-2 text-xl font-bold text-white">
-              <div className="bg-white/10 backdrop-blur-sm p-3 rounded-2xl shadow-lg group transition-all duration-300 hover:bg-white/20 hover:scale-105">
-                <img
-                  src="/images/肉球.svg"
-                  alt="肉球"
-                  className="w-[24px] h-[24px] object-contain group-hover:animate-pulse"
-                />
-              </div>
-              <GradientText variant="header" className="text-2xl tracking-tight">ペット日記</GradientText>
-            </Link>
-            <nav className="hidden md:block">
-              <ul className="flex gap-2">
-                <li>
-                  <Link href="/" className="flex items-center gap-2 px-5 py-2.5 rounded-xl hover:bg-white/10 transition-all duration-300">
-                    <GradientText variant="nav">日記一覧</GradientText>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/new" className="flex items-center gap-2 px-5 py-2.5 rounded-xl hover:bg-white/10 transition-all duration-300">
-                    <GradientText variant="nav">新しい日記</GradientText>
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-      </header>
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-pink-200 via-purple-200 to-cyan-200 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-pink-300/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-cyan-300/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+        <div className="absolute top-3/4 left-1/3 w-64 h-64 bg-purple-300/15 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2s'}}></div>
+      </div>
+      <Header />
       <div className="flex-1 flex flex-col px-4 sm:px-8 md:px-16 lg:px-[240px] py-[40px] mx-auto w-full">
         <Link
           href={`/${id}`}
-          className="w-full h-[24px] flex items-center cursor-pointer"
+          className="w-full h-[24px] flex items-center cursor-pointer hover:opacity-80 transition-opacity"
         >
-          <div className="w-[18px] h-[18px]">
-            <img
-              src="/images/左矢印.png"
-              alt="左矢印"
-              className="w-[18px] h-[18px] object-cover"
-            />
-          </div>
-          <div className="w-auto h-[19px] text-[#9333EA] text-[14px] font-sans ml-[4px]">
+          <ArrowLeft size={18} className="text-purple-600/80" />
+          <div className="w-auto h-[19px] text-purple-600/80 text-[14px] font-sans ml-[4px]">
             詳細に戻る
           </div>
         </Link>
