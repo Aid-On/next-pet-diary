@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { PetDiary } from '@/types/pet-diary';
 import { useRouter } from 'next/navigation';
-import { Heart, Lightbulb, RefreshCw, PenTool } from 'lucide-react';
+import { Heart, Lightbulb, RefreshCw, PenTool, X } from 'lucide-react';
 import PetSelector from '@/components/PetSelector';
 import { savePetInfo } from '@/lib/pet-info-storage';
 import Header from '@/components/Header';
@@ -359,8 +359,8 @@ export default function NewDiaryPage() {
           <>
             {/* アップロードエリア */}
             <div
-              className={`bg-white/25 backdrop-blur-xl border border-white/40 w-full h-auto min-h-[280px] sm:min-h-[308px] md:min-h-[336px] flex flex-col items-center shadow-2xl rounded-3xl mt-[24px] sm:mt-[32px] md:mt-[42px] pt-[24px] sm:pt-[28px] md:pt-[32px] pb-[24px] sm:pb-[28px] md:pb-[32px] transition-all duration-300 ${
-                dragActive ? 'bg-white/40 border-2 border-white/60 shadow-3xl' : ''
+              className={`relative bg-white/20 backdrop-blur-[20px] border border-white/30 w-full h-auto min-h-[280px] sm:min-h-[308px] md:min-h-[336px] flex flex-col items-center shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] rounded-[20px] mt-[24px] sm:mt-[32px] md:mt-[42px] pt-[24px] sm:pt-[28px] md:pt-[32px] pb-[24px] sm:pb-[28px] md:pb-[32px] transition-all duration-300 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/20 before:to-transparent before:rounded-[20px] before:pointer-events-none ${
+                dragActive ? 'bg-white/30 border-white/50 shadow-[0_8px_40px_0_rgba(31,38,135,0.5)] scale-[1.02]' : ''
               }`}
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
@@ -383,7 +383,7 @@ export default function NewDiaryPage() {
               </div>
               <div 
                 onClick={handleFileInputClick}
-                className="bg-white/25 backdrop-blur-xl border border-white/40 w-[112px] sm:w-[120px] md:w-[128px] h-[40px] sm:h-[44px] md:h-[48px] mt-[14px] sm:mt-[16px] md:mt-[18px] rounded-2xl flex justify-center items-center shadow-xl hover:bg-white/30 hover:scale-105 transition-all duration-300 cursor-pointer"
+                className="relative bg-white/20 backdrop-blur-[20px] border border-white/30 w-[112px] sm:w-[120px] md:w-[128px] h-[40px] sm:h-[44px] md:h-[48px] mt-[14px] sm:mt-[16px] md:mt-[18px] rounded-[16px] flex justify-center items-center shadow-[0_4px_16px_0_rgba(31,38,135,0.25)] hover:shadow-[0_8px_24px_0_rgba(31,38,135,0.35)] hover:scale-105 transition-all duration-300 cursor-pointer before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/15 before:to-transparent before:rounded-[16px] before:pointer-events-none hover:bg-white/25"
               >
                 <div className="w-auto h-auto text-gray-800 text-[12px] sm:text-[12.8px] md:text-[13.6px] font-semibold">
                   写真を選択
@@ -398,27 +398,27 @@ export default function NewDiaryPage() {
 
         {/* プレビューと入力フォーム（画像選択後） */}
         {previewUrl && (
-          <div className="bg-white shadow-2xl rounded-[16px] mt-[24px] sm:mt-[32px] md:mt-[42px] p-6">
-            <div className="flex flex-col lg:flex-row gap-6">
+          <div className="relative bg-white/20 backdrop-blur-[20px] border border-white/30 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] rounded-[20px] mt-[24px] sm:mt-[32px] md:mt-[42px] p-6 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/20 before:to-transparent before:rounded-[20px] before:pointer-events-none">
+            <div className="flex flex-col lg:flex-row gap-6 relative z-10">
               {/* 画像プレビュー */}
-              <div className="lg:w-1/2">
-                <div className="aspect-square rounded-lg overflow-hidden bg-gray-100">
+              <div className="lg:w-1/2 relative">
+                <div className="aspect-square rounded-lg overflow-hidden bg-gray-100 relative">
                   <img
                     src={previewUrl}
                     alt="プレビュー"
                     className="w-full h-full object-cover"
                   />
+                  <button
+                    onClick={handleClear}
+                    className="absolute top-3 right-3 w-8 h-8 bg-white/30 backdrop-blur-[15px] border border-white/40 rounded-full flex items-center justify-center shadow-[0_4px_16px_0_rgba(31,38,135,0.2)] hover:bg-white/40 hover:shadow-[0_6px_20px_0_rgba(31,38,135,0.3)] hover:scale-110 transition-all duration-300 group before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/20 before:to-transparent before:rounded-full before:pointer-events-none"
+                  >
+                    <X size={16} className="text-gray-700 group-hover:text-gray-800 transition-colors duration-300 relative z-10" />
+                  </button>
                 </div>
-                <button
-                  onClick={handleClear}
-                  className="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-4 rounded-lg transition-colors"
-                >
-                  画像を変更
-                </button>
               </div>
 
               {/* 入力フォーム */}
-              <div className="lg:w-1/2 flex flex-col gap-4">
+              <div className="lg:w-1/2 w-full flex flex-col gap-4">
                 {/* ペット情報選択コンポーネント */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -441,7 +441,7 @@ export default function NewDiaryPage() {
                     type="text"
                     value={petName}
                     onChange={e => setPetName(e.target.value)}
-                    className="w-full p-3 text-gray-600 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9333EA] focus:border-transparent"
+                    className="relative w-full p-3 bg-white/15 backdrop-blur-[15px] border border-white/30 rounded-[12px] text-gray-700 placeholder-gray-500 shadow-[0_2px_8px_0_rgba(31,38,135,0.15)] focus:bg-white/20 focus:border-white/50 focus:shadow-[0_4px_12px_0_rgba(31,38,135,0.25)] focus:outline-none transition-all duration-300"
                     placeholder="例：ポチ"
                     disabled={uploading}
                   />
@@ -455,7 +455,7 @@ export default function NewDiaryPage() {
                     type="text"
                     value={authorName}
                     onChange={e => setAuthorName(e.target.value)}
-                    className="w-full p-3 text-gray-600 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9333EA] focus:border-transparent"
+                    className="relative w-full p-3 bg-white/15 backdrop-blur-[15px] border border-white/30 rounded-[12px] text-gray-700 placeholder-gray-500 shadow-[0_2px_8px_0_rgba(31,38,135,0.15)] focus:bg-white/20 focus:border-white/50 focus:shadow-[0_4px_12px_0_rgba(31,38,135,0.25)] focus:outline-none transition-all duration-300"
                     placeholder="例：山田太郎"
                     disabled={uploading}
                   />
@@ -473,10 +473,10 @@ export default function NewDiaryPage() {
                         key={pronoun}
                         type="button"
                         onClick={() => setFirstPersonPronoun(pronoun)}
-                        className={`px-3 py-1 text-sm rounded-full border-2 transition-colors ${
+                        className={`relative px-3 py-1 text-sm rounded-full transition-all duration-300 ${
                           firstPersonPronoun === pronoun
-                            ? 'bg-[#9333EA] text-white border-[#9333EA]'
-                            : 'bg-white text-gray-600 border-gray-300 hover:border-[#9333EA]'
+                            ? 'bg-white/25 backdrop-blur-[15px] border border-white/40 text-gray-800 shadow-[0_2px_8px_0_rgba(31,38,135,0.25)] before:content-[""] before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/20 before:to-transparent before:rounded-full before:pointer-events-none'
+                            : 'bg-white/10 backdrop-blur-[10px] border border-white/20 text-gray-600 hover:bg-white/15 hover:border-white/30 hover:shadow-[0_2px_8px_0_rgba(31,38,135,0.15)]'
                         }`}
                         disabled={uploading}
                       >
@@ -488,7 +488,7 @@ export default function NewDiaryPage() {
                     type="text"
                     value={firstPersonPronoun}
                     onChange={e => setFirstPersonPronoun(e.target.value)}
-                    className="w-full p-2 text-gray-600 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9333EA] focus:border-transparent text-sm"
+                    className="relative w-full p-2 bg-white/15 backdrop-blur-[15px] border border-white/30 rounded-[12px] text-gray-700 placeholder-gray-500 shadow-[0_2px_8px_0_rgba(31,38,135,0.15)] focus:bg-white/20 focus:border-white/50 focus:shadow-[0_4px_12px_0_rgba(31,38,135,0.25)] focus:outline-none transition-all duration-300 text-sm"
                     placeholder="カスタム一人称を入力"
                     disabled={uploading}
                     maxLength={10}
@@ -506,7 +506,7 @@ export default function NewDiaryPage() {
                     value={petCharacteristics}
                     onChange={e => setPetCharacteristics(e.target.value)}
                     onInput={adjustCharacteristicsHeight}
-                    className="w-full p-3 text-gray-600 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9333EA] focus:border-transparent resize-none min-h-[80px]"
+                    className="relative w-full p-3 bg-white/15 backdrop-blur-[15px] border border-white/30 rounded-[12px] text-gray-700 placeholder-gray-500 shadow-[0_2px_8px_0_rgba(31,38,135,0.15)] focus:bg-white/20 focus:border-white/50 focus:shadow-[0_4px_12px_0_rgba(31,38,135,0.25)] focus:outline-none transition-all duration-300 resize-none min-h-[80px]"
                     placeholder="例：とても活発で人懐っこい性格。ボール遊びが大好き。少し怖がりな面もある。"
                     disabled={uploading}
                     maxLength={300}
@@ -547,7 +547,7 @@ export default function NewDiaryPage() {
                     value={memo}
                     onChange={e => setMemo(e.target.value)}
                     onInput={adjustMemoHeight}
-                    className="w-full p-3 text-gray-600 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9333EA] focus:border-transparent resize-none min-h-[100px]"
+                    className="relative w-full p-3 bg-white/15 backdrop-blur-[15px] border border-white/30 rounded-[12px] text-gray-700 placeholder-gray-500 shadow-[0_2px_8px_0_rgba(31,38,135,0.15)] focus:bg-white/20 focus:border-white/50 focus:shadow-[0_4px_12px_0_rgba(31,38,135,0.25)] focus:outline-none transition-all duration-300 resize-none min-h-[100px]"
                     placeholder="例：今日は公園でボール遊びをしました。とても元気に走り回っていました。"
                     disabled={uploading}
                     maxLength={500}
@@ -560,13 +560,27 @@ export default function NewDiaryPage() {
                 <button
                   onClick={handleUpload}
                   disabled={uploading || !petName.trim() || !authorName.trim()}
-                  className={`mt-4 w-full py-3 px-6 rounded-2xl font-semibold transition-all duration-300 ${
+                  className={`group relative mt-6 w-full py-4 px-8 rounded-[20px] font-bold text-lg transition-all duration-500 overflow-hidden ${
                     uploading || !petName.trim() || !authorName.trim()
-                      ? 'bg-gray-300/50 backdrop-blur-md text-gray-500 cursor-not-allowed border border-gray-300/30'
-                      : 'bg-white/20 backdrop-blur-xl border border-white/40 text-gray-800 font-semibold shadow-2xl hover:shadow-3xl hover:bg-white/25 hover:scale-105'
+                      ? 'bg-white/8 backdrop-blur-[8px] border border-white/15 text-gray-400 cursor-not-allowed shadow-[0_4px_16px_0_rgba(31,38,135,0.08)]'
+                      : 'bg-gradient-to-r from-white/30 via-white/25 to-white/20 backdrop-blur-[25px] border border-white/50 text-gray-800 shadow-[0_12px_40px_0_rgba(31,38,135,0.25),0_4px_16px_0_rgba(255,255,255,0.2)] hover:shadow-[0_16px_50px_0_rgba(31,38,135,0.35),0_6px_20px_0_rgba(255,255,255,0.3)] hover:scale-[1.03] hover:from-white/40 hover:via-white/35 hover:to-white/30 active:scale-[0.98]'
                   }`}
                 >
-                  {uploading ? 'アップロード中...' : '日記を作成'}
+                  <div className="absolute inset-0 bg-gradient-to-r from-pink-400/10 via-purple-400/10 to-cyan-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent rounded-[20px]"></div>
+                  <span className="relative z-10 flex items-center justify-center gap-2">
+                    {uploading ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                        アップロード中...
+                      </>
+                    ) : (
+                      <>
+                        <PenTool size={20} className="text-purple-600/80" />
+                        日記を作成
+                      </>
+                    )}
+                  </span>
                 </button>
               </div>
             </div>
@@ -577,19 +591,19 @@ export default function NewDiaryPage() {
         <div className="w-full h-auto flex flex-col lg:flex-row justify-between mt-[32px] sm:mt-[48px] md:mt-[64px] gap-[24px] sm:gap-[32px] lg:gap-[40px]">
           <div className="bg-white/25 backdrop-blur-2xl border border-white/30 shadow-2xl w-full lg:w-[48%] h-auto min-h-[280px] sm:min-h-[308px] md:min-h-[336px] flex flex-col justify-between p-[20px] sm:p-[26px] md:p-[32px] rounded-[12px] sm:rounded-[14px] md:rounded-[16px]">
             <h2 className="text-2xl font-semibold text-gray-900 flex items-center">
-              <Lightbulb size={24} className="text-purple-600 mr-2" />
+              <Lightbulb size={24} className="text-purple-500/80 mr-2" />
               使い方
             </h2>
             <ol className="flex-1 flex flex-col justify-evenly text-gray-700">
               <li className="flex items-center">
                 <div className="flex-shrink-0 mr-3">
-                  <RefreshCw size={18} className="text-purple-600" />
+                  <RefreshCw size={18} className="text-purple-500/80" />
                 </div>
                 <span>ペットの写真をアップロードします</span>
               </li>
               <li className="flex items-center">
                 <div className="flex-shrink-0 mr-3">
-                  <PenTool size={18} className="text-pink-600" />
+                  <PenTool size={18} className="text-pink-500/80" />
                 </div>
                 <span>AIが写真を分析し、ペットの様子を自動で日記にします</span>
               </li>
