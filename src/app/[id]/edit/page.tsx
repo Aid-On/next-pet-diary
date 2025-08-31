@@ -4,12 +4,17 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Calendar, Save, Trash2 } from 'lucide-react';
 import { validateImageUrl } from '@/lib/image-utils';
 import PetSelector from '@/components/PetSelector';
 import { savePetInfo } from '@/lib/pet-info-storage';
 import GradientText from '@/components/GradientText';
 import Header from '@/components/Header';
+import GlassButton from '@/components/GlassButton';
+import GlassCard from '@/components/GlassCard';
+import GlassTag from '@/components/GlassTag';
+import GlassInput from '@/components/GlassInput';
+import GlassTextarea from '@/components/GlassTextarea';
 
 export default function PetEditPage() {
   const params = useParams();
@@ -261,7 +266,7 @@ export default function PetEditPage() {
       <div className="flex-1 flex flex-col px-4 sm:px-8 md:px-16 lg:px-[240px] py-[40px] mx-auto w-full">
         <Link
           href={`/${id}`}
-          className="w-full h-[24px] flex items-center cursor-pointer hover:opacity-80 transition-opacity"
+          className="w-full h-[24px] flex items-center cursor-pointer"
         >
           <ArrowLeft size={18} className="text-purple-600/80" />
           <div className="w-auto h-[19px] text-purple-600/80 text-[14px] font-sans ml-[4px]">
@@ -285,8 +290,9 @@ export default function PetEditPage() {
           />
         </div>
 
-        <div className="w-full h-auto flex flex-col">
-          <div className="bg-gray-100 w-full aspect-[16/9] max-h-[500px] overflow-hidden relative rounded-t-[16px]">
+        <div className="w-full h-auto flex flex-col mt-[32px] relative z-10">
+          <GlassCard variant="gray" className="p-0">
+            <div className="w-full aspect-[16/9] max-h-[500px] overflow-hidden relative rounded-t-[20px]">
             {editData.imageUrl ? (
               <img
                 src={getImageUrl(editData.imageUrl)}
@@ -302,61 +308,53 @@ export default function PetEditPage() {
                 <div className="text-gray-400 text-lg">画像プレビュー</div>
               </div>
             )}
-          </div>
-          <div className="bg-[#e8e3e8] w-full h-auto flex flex-col rounded-b-[16px] shadow-2xl p-4 sm:p-6 md:p-8">
-            <div className="w-full h-[46px] flex justify-between items-center">
-              <div className="bg-[#F3E8FF] w-auto h-[40px] rounded-[9px] px-[16px] flex items-center">
-                <div className="w-full h-[26px] flex items-center">
-                  <div className="w-[18px] h-[18px] flex justify-center items-center">
-                    <img
-                      src="/images/日付.png"
-                      alt="日付"
-                      className="w-[18px] h-[18px] object-cover"
-                    />
-                  </div>
-                  <div className="w-auto h-[17px] text-[#6B7280] leading-[18px] text-[14px] font-sans flex ml-[6px]">
-                    {formatDate(diaryEntry.createdAt)}
-                  </div>
-                </div>
+            </div>
+            <div className="relative bg-gray-50/90 backdrop-blur-[10px] w-full h-auto flex flex-col rounded-b-[20px] p-4 sm:p-6 md:p-8 border-t border-gray-200/40">
+              <div className="w-full mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  画像URL
+                </label>
+                <GlassInput
+                  value={editData.imageUrl}
+                  onChange={e => setEditData({ ...editData, imageUrl: e.target.value })}
+                  placeholder="画像URLを入力してください"
+                  variant="gray"
+                />
               </div>
-              <div className="flex space-x-3">
-                <Link
-                  href={`/${id}`}
-                  className="bg-white w-[82px] h-[46px] border-[#6B7280] border-[1px] rounded-[12px] flex justify-center items-center cursor-pointer hover:bg-gray-50 transition-colors"
-                >
-                  <div className="w-auto h-[19px] text-[#6B7280] text-[14px] font-sans">
-                    キャンセル
-                  </div>
-                </Link>
-                <div className="bg-white w-[82px] h-[46px] border-[#9333EA] border-[1px] rounded-[12px] flex justify-center items-center cursor-pointer hover:bg-[#F3E8FF] transition-colors">
-                  <button
+              
+              <div className="w-full h-[46px] flex justify-between items-center mb-6">
+                <GlassTag icon={Calendar} variant="gray" className="h-[40px]">
+                  {formatDate(diaryEntry.createdAt)}
+                </GlassTag>
+                <div className="flex space-x-3">
+                  <Link href={`/${id}`}>
+                    <GlassButton variant="secondary">
+                      キャンセル
+                    </GlassButton>
+                  </Link>
+                  <GlassButton 
                     onClick={handleSave}
                     disabled={saving}
-                    className="w-auto h-[19px] text-[#9333EA] text-[14px] font-sans disabled:opacity-50"
+                    variant="primary"
+                    icon={Save}
+                    iconSize={14}
                   >
                     {saving ? '保存中' : '保存'}
-                  </button>
-                </div>
-                <div className="w-[96px] h-[46px] py-[13.5px] px-[20px] flex justify-between cursor-pointer hover:opacity-80 transition-opacity">
-                  <div className="bg-[#fca5a5] w-[16px] h-[16px]">
-                    <img
-                      src="/images/ゴミ箱.png"
-                      alt="ゴミ箱"
-                      className="w-[16px] h-[16px] object-cover"
-                    />
-                  </div>
-                  <button
+                  </GlassButton>
+                  <GlassButton 
                     onClick={() => setShowDeleteConfirm(true)}
-                    className="w-[32px] h-[19px] text-[13.6px] text-red-600 font-sans leading-[18px]"
+                    variant="danger"
+                    icon={Trash2}
+                    size="md"
+                    className="w-[96px]"
                   >
                     削除
-                  </button>
+                  </GlassButton>
                 </div>
               </div>
-            </div>
 
-            {/* ペット情報選択コンポーネントを追加 */}
-            <div className="w-full h-auto flex flex-col mt-[24px] mb-4">
+              {/* ペット情報選択コンポーネントを追加 */}
+              <div className="w-full h-auto flex flex-col mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 保存済みペット情報
               </label>
@@ -486,7 +484,8 @@ export default function PetEditPage() {
                 placeholder="ペット名を入力してください"
               />
             </div>
-          </div>
+            </div>
+          </GlassCard>
         </div>
       </div>
 
