@@ -5,6 +5,8 @@ export interface PetDiary {
   imageUrl: string;
   createdAt: Date;
   content: string;
+  petCharacteristics?: string;
+  firstPersonPronoun?: string;
 }
 
 export interface DiaryEntry {

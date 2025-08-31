@@ -1,5 +1,6 @@
 'use client';
 import { PetDiary } from '@/types/pet-diary';
+import GradientText from '@/components/GradientText';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -222,44 +223,34 @@ export default function PetDetailPage() {
   };
 
   return (
-    <div className="flex flex-col h-screen">
-      <header className="bg-gradient-to-r from-[#9333EA] via-[#EC4899] to-[#F97316] w-full justify-between items-center h-[82px] min-h-[82px] max-h-[82px] shadow-xl flex p-4 box-border">
-        <div className="w-[165px] h-[40px] flex justify-between items-center">
-          <div className="bg-[#a159d6] w-[40px] h-[40px] flex justify-center items-center rounded-[12px] shadow-lg">
-            <img
-              src="/images/肉球.svg"
-              alt="肉球"
-              className="w-[28px] h-[28px] object-contain"
-            />
-          </div>
-          <div className="w-[120px] h-[30px] text-white text-[22px] font-semibold flex items-center">
-            ペット日記
-          </div>
-        </div>
-        <div className="w-[281px] h-[50px] flex justify-between items-center">
-          <Link href={'/new'}>
-            <div className="w-[50px] h-[19px] text-white text-[16px] leading-[20px] font-sans">
-              ホーム
-            </div>
-          </Link>
-          <div className="bg-[#e27c63] w-[172px] h-[50px] rounded-[12px] px-[22px] flex justify-between items-center">
-            <div className="bg-[#de937c] w-[32px] h-[32px] rounded-[50%] flex justify-center items-center">
-              <img
-                src="/images/本.svg"
-                alt="本"
-                className="w-[21px] h-[21px] object-contain"
-              />
-            </div>
-            <div className="w-[64px] h-[19px] text-white text-[16px] leading-[20px] font-sans">
-              日記詳細
-            </div>
-            <div className="bg-[#ff9ca9] w-[14px] h-[14px] flex justify-center items-center">
-              <img
-                src="/images/星.svg"
-                alt="星"
-                className="w-[14px] h-[14px] object-contain"
-              />
-            </div>
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-cyan-100">
+      <header className="sticky top-0 z-50 bg-white/20 backdrop-blur-md border-b border-white/30 text-white shadow-lg py-4">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center">
+            <Link href="/" className="flex items-center gap-2 text-xl font-bold text-white">
+              <div className="bg-white/10 backdrop-blur-sm p-3 rounded-2xl shadow-lg group transition-all duration-300 hover:bg-white/20 hover:scale-105">
+                <img
+                  src="/images/肉球.svg"
+                  alt="肉球"
+                  className="w-[24px] h-[24px] object-contain group-hover:animate-pulse"
+                />
+              </div>
+              <GradientText variant="header" className="text-2xl tracking-tight">ペット日記</GradientText>
+            </Link>
+            <nav className="hidden md:block">
+              <ul className="flex gap-2">
+                <li>
+                  <Link href="/" className="flex items-center gap-2 px-5 py-2.5 rounded-xl hover:bg-white/10 transition-all duration-300">
+                    <GradientText variant="nav">日記一覧</GradientText>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/new" className="flex items-center gap-2 px-5 py-2.5 rounded-xl hover:bg-white/10 transition-all duration-300">
+                    <GradientText variant="nav">新しい日記</GradientText>
+                  </Link>
+                </li>
+              </ul>
+            </nav>
           </div>
         </div>
       </header>
@@ -301,11 +292,11 @@ export default function PetDetailPage() {
         )}
 
         <div className="w-full h-auto flex flex-col mt-[32px]">
-          <div className="w-full aspect-[16/9] max-h-[500px] overflow-hidden relative rounded-t-[16px]">
+          <div className="bg-gray-100 w-full aspect-[16/9] max-h-[500px] overflow-hidden relative rounded-t-[16px]">
             <img
               src={getImageUrl(diaryEntry.imageUrl)}
-              alt={diaryEntry.petName || diaryEntry.authour || 'ペット'}
-              className="absolute inset-0 w-full h-full object-cover"
+              alt={diaryEntry.petName || 'ペット'}
+              className="absolute inset-0 w-full h-full object-contain"
               loading="lazy"
               onError={e => {
                 e.currentTarget.src = '/images/placeholder.jpg';
@@ -314,64 +305,62 @@ export default function PetDetailPage() {
           </div>
           <div className="bg-[#e8e3e8] w-full h-auto flex flex-col rounded-b-[16px] shadow-2xl p-4 sm:p-6 md:p-8">
             <div className="w-full h-[46px] flex justify-between items-center">
-              <div className="bg-[#F3E8FF] w-[170px] h-[40px] rounded-[9px] px-[16px] flex items-center">
-                <div className=" w-full h-[26px] flex items-center">
-                  <div className="w-[26px] h-[26px] rounded-[50%] flex justify-center items-center">
+              <div className="bg-[#F3E8FF] w-auto h-[40px] rounded-[9px] px-[16px] flex items-center">
+                <div className="w-full h-[26px] flex items-center">
+                  <div className="w-[18px] h-[18px] flex justify-center items-center">
                     <img
                       src="/images/日付.png"
                       alt="日付"
                       className="w-[18px] h-[18px] object-cover"
                     />
                   </div>
-                  <div className="w-[100px] h-[17px] text-[#6B7280] leading-[18px] text-[14px] font-sans flex ml-[6px]">
+                  <div className="w-auto h-[17px] text-[#6B7280] leading-[18px] text-[14px] font-sans flex ml-[6px]">
                     {formatDate(diaryEntry.createdAt)}
                   </div>
                 </div>
               </div>
-              <div className=" w-[190px] h-[46px] flex justify-between items-center">
-                {/* 編集ボタン - サンプルデータ時は無効化 */}
-                {!isUsingFallback ? (
-                  <Link
-                    href={`/${id}/edit`}
-                    className="bg-white w-[82px] h-[46px] border-[#9333EA] border-[1px] rounded-[12px] flex justify-center items-center cursor-pointer hover:bg-[#F3E8FF] transition-colors"
-                  >
-                    <div className="w-auto h-[19px] text-[#9333EA] text-[14px] font-sans">
-                      編集
-                    </div>
-                  </Link>
-                ) : (
-                  <div className="bg-gray-200 w-[82px] h-[46px] border-[#6B7280] border-[1px] rounded-[12px] flex justify-center items-center">
-                    <div className="w-auto h-[19px] text-[#6B7280] text-[14px] font-sans">
-                      編集不可
-                    </div>
-                  </div>
-                )}
-
-                {/* 削除ボタン - router使用 */}
-                <button
-                  onClick={() => setShowDeleteConfirm(true)}
-                  disabled={isUsingFallback}
-                  className={`w-[96px] h-[46px] py-[13.5px] px-[20px] flex justify-between cursor-pointer transition-opacity ${
-                    isUsingFallback
-                      ? 'opacity-50 cursor-not-allowed'
-                      : 'hover:opacity-80'
-                  }`}
+              <div className="flex space-x-3">
+                <Link
+                  href={`/${id}/edit`}
+                  className="bg-white w-[82px] h-[46px] border-[#9333EA] border-[1px] rounded-[12px] flex justify-center items-center cursor-pointer hover:bg-[#F3E8FF] transition-colors"
                 >
-                  <div className="bg-[#e5bdff] w-[16px] h-[16px]">
+                  <div className="w-auto h-[19px] text-[#9333EA] text-[14px] font-sans">
+                    編集
+                  </div>
+                </Link>
+                <div className="w-[96px] h-[46px] py-[13.5px] px-[20px] flex justify-between cursor-pointer hover:opacity-80 transition-opacity">
+                  <div className="bg-[#fca5a5] w-[16px] h-[16px]">
                     <img
                       src="/images/ゴミ箱.png"
                       alt="ゴミ箱"
                       className="w-[16px] h-[16px] object-cover"
                     />
                   </div>
-                  <div className="w-[32px] h-[19px] text-[13.6px] text-white font-sans leading-[18px]">
+                  <button
+                    onClick={() => setShowDeleteConfirm(true)}
+                    className="w-[32px] h-[19px] text-[13.6px] text-red-600 font-sans leading-[18px]"
+                  >
                     削除
-                  </div>
-                </button>
+                  </button>
+                </div>
               </div>
             </div>
+            {/* ペットの特徴表示（存在する場合） */}
+            {diaryEntry.petCharacteristics && (
+              <div className="w-full h-auto flex flex-col mt-[24px] mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  ペットの特徴・性格
+                </label>
+                <div className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700">
+                  {diaryEntry.petCharacteristics}
+                </div>
+              </div>
+            )}
+
             <div className="w-full h-auto flex text-[15.3px] text-[#1F2937] leading-[34px] mt-[24px]">
-              {diaryEntry.content}
+              <div className="w-full whitespace-pre-wrap">
+                {diaryEntry.content}
+              </div>
             </div>
             {(diaryEntry.petName || diaryEntry.authour) && (
               <div className="w-full h-auto flex items-center mt-[16px]">

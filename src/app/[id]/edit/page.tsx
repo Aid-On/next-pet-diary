@@ -2,9 +2,12 @@
 import { PetDiary } from '@/types/pet-diary';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { validateImageUrl } from '@/lib/image-utils';
+import PetSelector from '@/components/PetSelector';
+import { savePetInfo } from '@/lib/pet-info-storage';
+import GradientText from '@/components/GradientText';
 
 export default function PetEditPage() {
   const params = useParams();
@@ -23,7 +26,68 @@ export default function PetEditPage() {
     imageUrl: '',
     content: '',
     petName: '',
+    petCharacteristics: '',
+    firstPersonPronoun: 'ぼく',
   });
+  // ペット情報保存チェック
+  const [shouldSavePetInfo, setShouldSavePetInfo] = useState<boolean>(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const characteristicsRef = useRef<HTMLTextAreaElement>(null);
+
+  const handlePetSelect = (
+    selectedPetName: string,
+    selectedCharacteristics: string,
+    selectedFirstPersonPronoun: string
+  ) => {
+    setEditData(prev => ({
+      ...prev,
+      petName: selectedPetName,
+      petCharacteristics: selectedCharacteristics,
+      firstPersonPronoun: selectedFirstPersonPronoun,
+    }));
+  };
+
+  const savePetInfoIfNeeded = () => {
+    if (
+      shouldSavePetInfo &&
+      editData.petName.trim() &&
+      editData.petCharacteristics.trim()
+    ) {
+      try {
+        savePetInfo({
+          petName: editData.petName.trim(),
+          petCharacteristics: editData.petCharacteristics.trim(),
+          firstPersonPronoun: editData.firstPersonPronoun,
+        });
+      } catch (error) {
+        console.warn('Failed to save pet info:', error);
+      }
+    }
+  };
+
+  // テキストエリアの高さを調整する関数
+  const adjustTextareaHeight = () => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  };
+
+  const adjustCharacteristicsHeight = () => {
+    if (characteristicsRef.current) {
+      characteristicsRef.current.style.height = 'auto';
+      characteristicsRef.current.style.height = `${characteristicsRef.current.scrollHeight}px`;
+    }
+  };
+
+  // コンテンツが変更された時に高さを調整
+  useEffect(() => {
+    adjustTextareaHeight();
+  }, [editData.content]);
+
+  useEffect(() => {
+    adjustCharacteristicsHeight();
+  }, [editData.petCharacteristics]);
 
   // 画像URLを修正（相対パスを絶対パスに変換）
   const getImageUrl = (url: string) => {
@@ -70,6 +134,8 @@ export default function PetEditPage() {
         imageUrl: data.imageUrl,
         content: data.content,
         petName: data.petName || data.authour || '',
+        petCharacteristics: data.petCharacteristics || '',
+        firstPersonPronoun: data.firstPersonPronoun || 'ぼく',
       });
       setLoading(false);
     } catch (err) {
@@ -106,6 +172,8 @@ export default function PetEditPage() {
           imageUrl: normalizedImageUrl,
           content: editData.content,
           petName: editData.petName,
+          petCharacteristics: editData.petCharacteristics,
+          firstPersonPronoun: editData.firstPersonPronoun,
           createdAt: diaryEntry.createdAt.toISOString(),
         }),
       });
@@ -113,6 +181,9 @@ export default function PetEditPage() {
       if (!response.ok) {
         throw new Error('更新に失敗しました');
       }
+
+      // ペット情報を保存（必要に応じて）
+      savePetInfoIfNeeded();
 
       // 更新成功後、詳細ページにリダイレクト
       router.push(`/${id}`);
@@ -177,48 +248,38 @@ export default function PetEditPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen">
-      <header className="bg-gradient-to-r from-[#9333EA] via-[#EC4899] to-[#F97316] w-full justify-between items-center h-[82px] min-h-[82px] max-h-[82px] shadow-xl flex p-4 box-border">
-        <div className="w-[165px] h-[40px] flex justify-between items-center">
-          <div className="bg-[#a159d6] w-[40px] h-[40px] flex justify-center items-center rounded-[12px] shadow-lg">
-            <img
-              src="/images/肉球.svg"
-              alt="肉球"
-              className="w-[28px] h-[28px] object-contain"
-            />
-          </div>
-          <div className="w-[120px] h-[30px] text-white text-[22px] font-semibold flex items-center">
-            ペット日記
-          </div>
-        </div>
-        <div className="w-[281px] h-[50px] flex justify-between items-center">
-          <Link href={'/new'}>
-            <div className="w-[50px] h-[19px] text-white text-[16px] leading-[20px] font-sans">
-              ホーム
-            </div>
-          </Link>
-          <div className="bg-[#e27c63] w-[172px] h-[50px] rounded-[12px] px-[22px] flex justify-between items-center">
-            <div className="bg-[#de937c] w-[32px] h-[32px] rounded-[50%] flex justify-center items-center">
-              <img
-                src="/images/本.svg"
-                alt="本"
-                className="w-[21px] h-[21px] object-contain"
-              />
-            </div>
-            <div className="w-[64px] h-[19px] text-white text-[16px] leading-[20px] font-sans">
-              日記編集
-            </div>
-            <div className="bg-[#ff9ca9] w-[14px] h-[14px] flex justify-center items-center">
-              <img
-                src="/images/星.svg"
-                alt="星"
-                className="w-[14px] h-[14px] object-contain"
-              />
-            </div>
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-cyan-100">
+      <header className="sticky top-0 z-50 bg-white/20 backdrop-blur-md border-b border-white/30 text-white shadow-lg py-4">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center">
+            <Link href="/" className="flex items-center gap-2 text-xl font-bold text-white">
+              <div className="bg-white/10 backdrop-blur-sm p-3 rounded-2xl shadow-lg group transition-all duration-300 hover:bg-white/20 hover:scale-105">
+                <img
+                  src="/images/肉球.svg"
+                  alt="肉球"
+                  className="w-[24px] h-[24px] object-contain group-hover:animate-pulse"
+                />
+              </div>
+              <GradientText variant="header" className="text-2xl tracking-tight">ペット日記</GradientText>
+            </Link>
+            <nav className="hidden md:block">
+              <ul className="flex gap-2">
+                <li>
+                  <Link href="/" className="flex items-center gap-2 px-5 py-2.5 rounded-xl hover:bg-white/10 transition-all duration-300">
+                    <GradientText variant="nav">日記一覧</GradientText>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/new" className="flex items-center gap-2 px-5 py-2.5 rounded-xl hover:bg-white/10 transition-all duration-300">
+                    <GradientText variant="nav">新しい日記</GradientText>
+                  </Link>
+                </li>
+              </ul>
+            </nav>
           </div>
         </div>
       </header>
-      <div className="flex-1 flex flex-col px-4 sm:px-8 md:px-16 lg:px-[240px] py-[40px] max-w-4xl mx-auto w-full">
+      <div className="flex-1 flex flex-col px-4 sm:px-8 md:px-16 lg:px-[240px] py-[40px] mx-auto w-full">
         <Link
           href={`/${id}`}
           className="w-full h-[24px] flex items-center cursor-pointer"
@@ -246,18 +307,18 @@ export default function PetEditPage() {
             onChange={e =>
               setEditData({ ...editData, imageUrl: e.target.value })
             }
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9333EA] focus:border-transparent text-sm"
+            className="w-full p-3 text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9333EA] focus:border-transparent text-sm bg-white"
             placeholder="画像URLを入力してください"
           />
         </div>
 
         <div className="w-full h-auto flex flex-col">
-          <div className="w-full aspect-[16/9] max-h-[500px] overflow-hidden relative rounded-t-[16px]">
+          <div className="bg-gray-100 w-full aspect-[16/9] max-h-[500px] overflow-hidden relative rounded-t-[16px]">
             {editData.imageUrl ? (
               <img
                 src={getImageUrl(editData.imageUrl)}
                 alt={editData.petName || 'ペット'}
-                className="absolute inset-0 w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-contain"
                 loading="lazy"
                 onError={e => {
                   e.currentTarget.src = '/images/placeholder.jpg';
@@ -271,16 +332,16 @@ export default function PetEditPage() {
           </div>
           <div className="bg-[#e8e3e8] w-full h-auto flex flex-col rounded-b-[16px] shadow-2xl p-4 sm:p-6 md:p-8">
             <div className="w-full h-[46px] flex justify-between items-center">
-              <div className="bg-[#F3E8FF] w-[170px] h-[40px] rounded-[9px] px-[16px] flex items-center">
-                <div className=" w-full h-[26px] flex items-center">
-                  <div className="w-[26px] h-[26px] rounded-[50%] flex justify-center items-center">
+              <div className="bg-[#F3E8FF] w-auto h-[40px] rounded-[9px] px-[16px] flex items-center">
+                <div className="w-full h-[26px] flex items-center">
+                  <div className="w-[18px] h-[18px] flex justify-center items-center">
                     <img
                       src="/images/日付.png"
                       alt="日付"
                       className="w-[18px] h-[18px] object-cover"
                     />
                   </div>
-                  <div className="w-[100px] h-[17px] text-[#6B7280] leading-[18px] text-[14px] font-sans flex ml-[6px]">
+                  <div className="w-auto h-[17px] text-[#6B7280] leading-[18px] text-[14px] font-sans flex ml-[6px]">
                     {formatDate(diaryEntry.createdAt)}
                   </div>
                 </div>
@@ -304,7 +365,7 @@ export default function PetEditPage() {
                   </button>
                 </div>
                 <div className="w-[96px] h-[46px] py-[13.5px] px-[20px] flex justify-between cursor-pointer hover:opacity-80 transition-opacity">
-                  <div className="bg-[#e5bdff] w-[16px] h-[16px]">
+                  <div className="bg-[#fca5a5] w-[16px] h-[16px]">
                     <img
                       src="/images/ゴミ箱.png"
                       alt="ゴミ箱"
@@ -313,7 +374,7 @@ export default function PetEditPage() {
                   </div>
                   <button
                     onClick={() => setShowDeleteConfirm(true)}
-                    className="w-[32px] h-[19px] text-[13.6px] text-white font-sans leading-[18px]"
+                    className="w-[32px] h-[19px] text-[13.6px] text-red-600 font-sans leading-[18px]"
                   >
                     削除
                   </button>
@@ -321,14 +382,118 @@ export default function PetEditPage() {
               </div>
             </div>
 
-            {/* 内容編集 - 詳細画面と同じ位置・スタイル */}
-            <div className="w-full h-auto flex text-[15.3px] text-[#1F2937] leading-[34px] mt-[24px]">
-              <textarea
-                value={editData.content}
+            {/* ペット情報選択コンポーネントを追加 */}
+            <div className="w-full h-auto flex flex-col mt-[24px] mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                保存済みペット情報
+              </label>
+              <PetSelector
+                onSelectPet={handlePetSelect}
+                currentPetName={editData.petName}
+                currentCharacteristics={editData.petCharacteristics}
+                currentFirstPersonPronoun={editData.firstPersonPronoun}
+                disabled={saving}
+              />
+            </div>
+
+            {/* 一人称選択フィールドを追加 */}
+            <div className="w-full h-auto flex flex-col mt-[24px] mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                日記で使う一人称
+              </label>
+              <div className="flex flex-wrap gap-2 mb-2">
+                {['ぼく', 'わたし', 'おれ', 'あたし'].map(pronoun => (
+                  <button
+                    key={pronoun}
+                    type="button"
+                    onClick={() =>
+                      setEditData({
+                        ...editData,
+                        firstPersonPronoun: pronoun,
+                      })
+                    }
+                    className={`px-3 py-1 text-sm rounded-full border-2 transition-colors ${
+                      editData.firstPersonPronoun === pronoun
+                        ? 'bg-[#9333EA] text-white border-[#9333EA]'
+                        : 'bg-white text-gray-600 border-gray-300 hover:border-[#9333EA]'
+                    }`}
+                    disabled={saving}
+                  >
+                    {pronoun}
+                  </button>
+                ))}
+              </div>
+              <input
+                type="text"
+                value={editData.firstPersonPronoun}
                 onChange={e =>
-                  setEditData({ ...editData, content: e.target.value })
+                  setEditData({
+                    ...editData,
+                    firstPersonPronoun: e.target.value,
+                  })
                 }
-                className="w-full min-h-[120px] p-4 border border-gray-300 rounded-lg resize-y focus:ring-2 focus:ring-[#9333EA] focus:border-transparent text-[15.3px] leading-[34px] bg-white"
+                className="w-full p-2 text-gray-600 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9333EA] focus:border-transparent text-sm bg-white"
+                placeholder="カスタム一人称を入力"
+                disabled={saving}
+                maxLength={10}
+              />
+            </div>
+
+            {/* ペット特徴編集フィールドを追加 */}
+            <div className="w-full h-auto flex flex-col mt-[24px] mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ペットの特徴・性格
+              </label>
+              <textarea
+                ref={characteristicsRef}
+                value={editData.petCharacteristics}
+                onChange={e =>
+                  setEditData({
+                    ...editData,
+                    petCharacteristics: e.target.value,
+                  })
+                }
+                onInput={adjustCharacteristicsHeight}
+                className="w-full text-gray-600 min-h-[80px] p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-[#9333EA] focus:border-transparent text-sm bg-white"
+                placeholder="ペットの特徴や性格を入力してください"
+                maxLength={300}
+              />
+              <div className="text-xs text-gray-500 mt-1 text-right">
+                {editData.petCharacteristics.length}/300文字
+              </div>
+
+              {/* ペット情報保存のチェックボックス */}
+              {editData.petName.trim() &&
+                editData.petCharacteristics.trim() && (
+                  <div className="flex items-center mt-2">
+                    <input
+                      type="checkbox"
+                      id="save-pet-info"
+                      checked={shouldSavePetInfo}
+                      onChange={e => setShouldSavePetInfo(e.target.checked)}
+                      className="mr-2"
+                      disabled={saving}
+                    />
+                    <label
+                      htmlFor="save-pet-info"
+                      className="text-sm text-gray-600"
+                    >
+                      このペット情報を保存して再利用する
+                    </label>
+                  </div>
+                )}
+            </div>
+
+            {/* 内容編集 - 詳細画面と同じ位置・スタイル */}
+            <div className="w-full h-auto flex text-[15.3px] text-[#1F2937] leading-[34px]">
+              <textarea
+                ref={textareaRef}
+                value={editData.content}
+                onChange={e => {
+                  setEditData({ ...editData, content: e.target.value });
+                }}
+                onInput={adjustTextareaHeight}
+                className="w-full min-h-[120px] p-4 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-[#9333EA] focus:border-transparent text-[15.3px] leading-[34px] bg-white"
                 placeholder="日記の内容を入力してください"
               />
             </div>

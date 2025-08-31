@@ -64,14 +64,55 @@ export async function PUT(req: Request, { params }: { params: Params }) {
 
     if (!body) {
       return Response.json({ message: 'Invalid JSON' }, { status: 400 });
-    } else if (body.petName && typeof body.petName !== 'string') {
-      return Response.json({ message: 'Invalid JSON' }, { status: 400 });
-    } else if (body.imageUrl && typeof body.imageUrl !== 'string') {
-      return Response.json({ message: 'Invalid JSON' }, { status: 400 });
-    } else if (body.content && typeof body.content !== 'string') {
-      return Response.json({ message: 'Invalid JSON' }, { status: 400 });
-    } else if (body.createdAt && typeof body.createdAt !== 'string') {
-      return Response.json({ message: 'Invalid JSON' }, { status: 400 });
+    }
+
+    // 型チェックによるバリデーション
+    if (body.petName !== undefined && typeof body.petName !== 'string') {
+      return Response.json(
+        { message: 'Invalid petName: expected string' },
+        { status: 400 }
+      );
+    }
+
+    if (body.imageUrl !== undefined && typeof body.imageUrl !== 'string') {
+      return Response.json(
+        { message: 'Invalid imageUrl: expected string' },
+        { status: 400 }
+      );
+    }
+
+    if (body.content !== undefined && typeof body.content !== 'string') {
+      return Response.json(
+        { message: 'Invalid content: expected string' },
+        { status: 400 }
+      );
+    }
+
+    if (body.createdAt !== undefined && typeof body.createdAt !== 'string') {
+      return Response.json(
+        { message: 'Invalid createdAt: expected string' },
+        { status: 400 }
+      );
+    }
+
+    if (
+      body.petCharacteristics !== undefined &&
+      typeof body.petCharacteristics !== 'string'
+    ) {
+      return Response.json(
+        { message: 'Invalid petCharacteristics: expected string' },
+        { status: 400 }
+      );
+    }
+
+    if (
+      body.firstPersonPronoun !== undefined &&
+      typeof body.firstPersonPronoun !== 'string'
+    ) {
+      return Response.json(
+        { message: 'Invalid firstPersonPronoun: expected string' },
+        { status: 400 }
+      );
     }
     // メモリから検索
     const items = await readPetDiaries();
@@ -85,11 +126,19 @@ export async function PUT(req: Request, { params }: { params: Params }) {
 
     const updated: PetDiary = {
       authour: current.authour,
-      petName: body.petName || current.petName,
+      petName: body.petName !== undefined ? body.petName : current.petName,
       id: current.id,
-      imageUrl: body.imageUrl ?? current.imageUrl,
+      imageUrl: body.imageUrl !== undefined ? body.imageUrl : current.imageUrl,
       createdAt: body.createdAt ? new Date(body.createdAt) : current.createdAt,
-      content: body.content ?? current.content,
+      content: body.content !== undefined ? body.content : current.content,
+      petCharacteristics:
+        body.petCharacteristics !== undefined
+          ? body.petCharacteristics.trim() || undefined
+          : current.petCharacteristics,
+      firstPersonPronoun:
+        body.firstPersonPronoun !== undefined
+          ? body.firstPersonPronoun.trim() || 'ぼく'
+          : current.firstPersonPronoun || 'ぼく',
     };
 
     // メモリストレージを更新（ファイルシステム操作なし）

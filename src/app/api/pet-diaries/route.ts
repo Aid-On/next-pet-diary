@@ -116,16 +116,59 @@ export async function POST(req: Request) {
       );
     }
 
+    // 追加のバリデーション
+    if (body.memo && typeof body.memo !== 'string') {
+      return Response.json(
+        { message: 'Invalid memo: expected string' },
+        { status: 400 }
+      );
+    }
+
+    if (
+      body.petCharacteristics &&
+      typeof body.petCharacteristics !== 'string'
+    ) {
+      return Response.json(
+        { message: 'Invalid petCharacteristics: expected string' },
+        { status: 400 }
+      );
+    }
+
+    if (
+      body.firstPersonPronoun &&
+      typeof body.firstPersonPronoun !== 'string'
+    ) {
+      return Response.json(
+        { message: 'Invalid firstPersonPronoun: expected string' },
+        { status: 400 }
+      );
+    }
+
     const petName = body.petName || body.authour;
-    const userContent = body.content || '';
-    const aiPrompt = `${petName}というペットの日記を書いてください。${userContent ? `内容: ${userContent}` : ''}`;
+    const userMemo = body.memo || '';
+    const firstPersonPronoun = body.firstPersonPronoun || 'ぼく';
+    const petCharacteristics = body.petCharacteristics || '';
+
+    // AIプロンプトに備考と特徴を含める
+    let aiPrompt = `${petName}というペットの日記を書いてください。`;
+
+    if (petCharacteristics) {
+      aiPrompt += `\n\nペットの特徴・性格：\n${petCharacteristics}\n\n`;
+    }
+
+    if (userMemo) {
+      aiPrompt += `\n\n飼い主からの今日の出来事・備考：\n${userMemo}\n\n`;
+    }
+
+    aiPrompt += `画像の内容と上記の情報を参考にして、愛情のこもった日記を作成してください。`;
 
     // 新しいアイテムを作成
     // imageUrlをファイルシステムパスに変換（/uploads/... -> public/uploads/...）
     const imagePath = path.join(process.cwd(), 'public', body.imageUrl);
     const aiMessage = await generateAIResponseWithImage(
       aiPrompt,
-      imagePath
+      imagePath,
+      firstPersonPronoun
     );
     const newPetDiary: PetDiary = {
       id: randomUUID(),
@@ -134,6 +177,8 @@ export async function POST(req: Request) {
       imageUrl: body.imageUrl,
       createdAt: new Date(),
       content: aiMessage || 'AIが自動生成する内容',
+      petCharacteristics: body.petCharacteristics?.trim() || undefined,
+      firstPersonPronoun: firstPersonPronoun,
     };
 
     console.log('POST /pet-diaries - New diary created:', newPetDiary.id);
