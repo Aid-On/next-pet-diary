@@ -5,7 +5,26 @@ import { randomUUID } from 'crypto';
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+      {
+        protocol: 'http',
+        hostname: '**',
+      },
+    ],
+    formats: ['image/webp', 'image/avif'],
+  },
+  experimental: {
+    optimizePackageImports: ['lucide-react'],
+  },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  poweredByHeader: false,
 };
 
 export default nextConfig;

@@ -267,14 +267,16 @@ export default function PetDetailPage() {
         <div className="w-full h-auto flex flex-col mt-[32px] relative z-10">
           <div className="relative bg-white/20 backdrop-blur-[20px] border border-white/30 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] rounded-[20px] overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/20 before:to-transparent before:rounded-[20px] before:pointer-events-none">
             <div className="w-full aspect-[16/9] max-h-[500px] overflow-hidden relative rounded-t-[20px]">
-              <img
+              <Image
                 src={getImageUrl(diaryEntry.imageUrl)}
                 alt={diaryEntry.petName || 'ペット'}
-                className="absolute inset-0 w-full h-full object-contain"
-                loading="lazy"
-                onError={e => {
-                  e.currentTarget.src = '/images/placeholder.jpg';
-                }}
+                fill
+                className="object-contain"
+                sizes="(max-width: 768px) 100vw, 80vw"
+                priority
+                placeholder="blur"
+                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkbHB0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyatCNPCNutdBuLe6jiZ0aPaG5bEr5v5EpQKG5aOFVwtrjP84iADNd/gfVZtWZNGh2w9jCcFAu2FS7Y9tWnLiYJ9xFEqnAAQJj4Lve5c2CqVhp0nM9/kgP3qB5dvlckNw76B8XTwSAnJAZqA"
+                onError={() => {}}
               />
             </div>
             <div className="relative bg-white/15 backdrop-blur-[15px] w-full h-auto flex flex-col rounded-b-[20px] p-4 sm:p-6 md:p-8 border-t border-white/20">

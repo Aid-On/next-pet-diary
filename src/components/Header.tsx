@@ -3,7 +3,6 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import GradientText from './GradientText';
 
 export default function Header() {
   const pathname = usePathname();

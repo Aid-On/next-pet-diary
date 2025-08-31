@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { PetDiary } from '@/types/pet-diary';
 import Header from '@/components/Header';
