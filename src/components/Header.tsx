@@ -15,35 +15,15 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white/10 backdrop-blur-2xl border-b border-white/15 shadow-[0_8px_32px_rgba(0,0,0,0.1)] py-6">
+    <header className="sticky top-0 z-50 backdrop-blur-2xl border-b border-white/15 shadow-[0_8px_32px_rgba(0,0,0,0.1)] py-6">
       <div className="container mx-auto px-6">
-        <div className="flex justify-between items-center">
-          <Link href="/" className="group">
-            <div className="bg-white/30 backdrop-blur-2xl border border-white/40 rounded-2xl shadow-2xl px-4 py-3 group-hover:bg-white/40 group-hover:shadow-3xl group-hover:scale-[1.02] transition-all duration-500">
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-pink-400 to-cyan-400 rounded-xl opacity-20 blur-sm"></div>
-                  <div className="relative bg-white/60 backdrop-blur-md p-2.5 rounded-xl border border-white/60 shadow-lg">
-                    <img
-                      src="/images/肉球.svg"
-                      alt="肉球"
-                      className="w-[20px] h-[20px] object-contain"
-                      style={{filter: 'brightness(0.7) saturate(1.2)'}}
-                    />
-                  </div>
-                </div>
-                <span 
-                  className="text-2xl font-black bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 text-transparent bg-clip-text tracking-tight"
-                  style={{
-                    backgroundSize: '300% 300%',
-                    animation: 'gradientShift 12s ease-in-out infinite',
-                    filter: 'drop-shadow(0 2px 8px rgba(168, 85, 247, 0.3))'
-                  }}
-                >
-                  ペット日記
-                </span>
-              </div>
-            </div>
+        <div className="flex justify-between items-center h-[60px]">
+          <Link href="/" className="group h-full flex items-center">
+            <img
+              src="/images/pet-diary-logo001.png"
+              alt="ペット日記ロゴ"
+              className="h-full object-contain group-hover:scale-105 transition-transform duration-300"
+            />
           </Link>
           
           <nav className="hidden md:block">
